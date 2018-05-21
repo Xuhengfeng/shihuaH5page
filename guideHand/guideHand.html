@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>购房指南</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <script>
+        window.onload=window.onpageShow=window.onresize=function(){
+            var wWidth = window.innerWidth;
+            if(wWidth>=414) wWidth = 414;
+            document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
+        }
+    </script>
+    <style>
+        html,body{width: 100%}
+        nav{background: #f9f9f9}
+        nav .menu{
+            width: 100%;
+            overflow-x: scroll;
+            display: flex;
+            flex-flow:row nowrap
+        }
+        nav li{
+            flex:1.6rem 0 0;
+            width: 1.6rem;
+            text-align: center;
+            font-size: 0.28rem;
+            height: 0.7rem;
+            line-height: 0.7rem;
+            background: #f9f9f9
+        }
+        section li{
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 0.4rem 0;
+            margin: 0 0.24rem;
+            border-bottom: 1px solid #e6e6e6;
+        }
+        section li img{
+            width: 2.20rem;
+            height: 1.6rem;
+            background: red;
+            margin-left: .32rem;
+        }
+        section li .content{flex: 1}
+        section li .content p:first-child{
+            font-size: 0.32rem;
+            color: #000000;
+            line-height: 1.5;
+            overflow : hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            text-align: justify;
+            margin-bottom: 0.3rem;
+        }
+        .time{
+            font-size: .29rem;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <nav>
+            <ul class="menu">
+                <li v-for="item in menudata">{{item}}</li>
+            </ul>
+        </nav>
+        <section>
+            <ul class="list">
+                <li v-for="item in 5">
+                    <div class="content">
+                        <p>需求：点击A页面跳转至B页面，在B页面点击手机物理回退键或者history.back回退时，需要在A页面判断当前页面是否是回退回来的页面，而不是新加载的。这里用到一个</p>
+                        <p class="time">8小时前</p>
+                    </div>
+                    <img src="" alt="">
+                </li>
+            </ul> 
+        </section>
+    </div>
+    <script src="../js/vue.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data:{
+                menudata:['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接','买房风险']
+            }
+        }) 
+    </script>
+</body>
+</html>
