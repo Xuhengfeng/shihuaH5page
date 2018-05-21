@@ -16,19 +16,127 @@
         console.dir(window)
     </script>
     <style>
-        html,body{width: 100%}
+        html,body{width: 100%;height: 100%;background: #f5f5f5}
+        #box{background: #ffffff}
+        li{
+            margin-left: 0.3rem;
+            padding-right: 0.5rem;
+            font-size: 0.3rem;
+            border-bottom:1px solid #e6e6e6;
+            height: 1rem;
+            line-height: 1rem;
+        }
+        li{position: relative}
+        li span,li input{float: right}
+        li input{
+           position: absolute;
+           width: 60%;
+           top: 50%;
+           right: 0.85rem;
+           text-align: right;
+           transform: translateY(-50%);
+           outline: none;
+        }
+        li img{
+            position: absolute;
+            top: 50%;
+            width: 0.4rem;
+            height: 0.4rem;
+            right: 0.1rem;
+            transform: translateY(-50%);
+        }
+        .computer{
+            display: block;
+            height: 1rem;
+            line-height: 1rem;
+            text-align: center;
+            width: 92%;
+            margin: 0.2rem auto 0;
+            border: 0;
+            background: #00ae66;
+            color: #ffffff;
+        }
+        .tips{
+            font-size: 0.25rem;
+            color: #e6e6e6;
+            text-align: center;
+            padding: 0.3rem;
+        }
+        .shadow{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+        }
+        .dialog{
+            background: #ffffff;
+            position: fixed;
+            bottom: 0;
+            height: 40%;
+            width: 100%;
+        }
+        .dialog .title{
+            font-size: 0.3rem;
+            border-bottom:1px solid #e6e6e6;
+            height: 1rem;
+            line-height: 1rem;
+            text-align: center;
+        }
+        .dialog .title span{
+            position: absolute;
+            font-size: 0.25rem;
+            right: 0;
+            width: 20%;
+            height: 1rem;
+        }
+        .slide-fade-enter-active {
+            transition: all .3s ease-out;
+        }
+        .slide-fade-leave-active {
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        }
+        .slide-fade-enter, .slide-fade-leave-to{
+            transform: translateY(4rem);
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
     <div id="box">
-        111
+        <ul>
+            <li @click="selectItem()">计算方式<span>按贷款总额</span><img src="img/arrows.png"/></li>
+            <li>贷款总额<input/><span>万</span></li>
+            <li @click="selectItem()">贷款年限<span>按照贷款总额</span><img src="img/arrows.png"/></li>
+            <li @click="selectItem()">贷款利率<span>按照贷款总额</span><img src="img/arrows.png"/></li>
+        </ul>
+        <button class="computer">开始计算</button>
+        <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
+        <div class="shadow" v-if="isCancel" @click="selectItem()"></div>
+        <transition name="slide-fade">
+            <div class="dialog" v-if="isCancel">
+                <div class="title">计算方式<span @click="cancel">取消</span></div>
+                <ul>
+                    <li v-for="item in 5">2</li>
+                </ul>
+            </div>
+        </transition>
     </div>
     <script src="../js/vue.min.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
             data:{
-                
+                isCancel: false
+            },
+            methods:{
+                cancel() {
+                    this.isCancel = false;
+                },
+                selectItem() {
+                    this.isCancel = true;
+                }
             }
         }) 
     </script>
