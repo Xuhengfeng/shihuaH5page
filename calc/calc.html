@@ -25,10 +25,10 @@
         <!-- 公积金贷款 商业贷款-->
         <section v-if="selectNum == 0||selectNum == 1">
             <ul>
-                <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="img/arrows.png"/></li>
+                <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="imgs/arrows.png"/></li>
                 <li class="price">贷款总额<input v-model="loans" placeholder="0"/><span>万</span></li>
-                <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold(2)">贷款利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="img/arrows.png"/></li>
+                <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(2)">贷款利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="imgs/arrows.png"/></li>
             </ul>
             <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
             <button class="computer">开始计算</button>
@@ -37,13 +37,13 @@
         <!-- 组合贷款 -->
         <section v-if="selectNum == 2">
             <ul>
-                <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="img/arrows.png"/></li>
+                <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="imgs/arrows.png"/></li>
                 <li class="price">贷款总额<input v-model="loans" placeholder="0"/><span>万</span></li>
-                <li @click="unfold()">公积金贷款<input placeholder="30年" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold(2)">公积金利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold()">商业贷款<input placeholder="0" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold(2)">商贷利率<input placeholder="最新基准利率(4.9%)" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="img/arrows.png"/></li>
+                <li @click="unfold()">公积金贷款<input placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(2)">公积金利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold()">商业贷款<input placeholder="0" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(2)">商贷利率<input placeholder="最新基准利率(4.9%)" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
             </ul>
             <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
             <button class="computer">开始计算</button>
