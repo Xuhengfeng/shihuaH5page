@@ -15,18 +15,20 @@
     <div id="box">
         <nav>
             <ul class="menu">
-                <li v-for="item in menudata">{{item}}</li>
+                <li v-for="(item,index) in menudata" 
+                    :class="selectNum==index?'bgColor':''"
+                    @click="selectItem(index)">{{item}}</li>
             </ul>
         </nav>
         <section>
             <div id="mescroll" class="mescroll">
                 <ul id="dataList" class="list">
-                    <li v-for="item in pdlist">
+                    <li v-for="(item,index) in pdlist" @click="detialh5page(index)">
                         <div class="content">
-                            <p>需求：点击A页面跳转至B页面，在B页面点击手机物理回退键或者history.back回退时，需要在A页面判断当前页面是否是回退回来的页面，而不是新加载的。这里用到一个</p>
-                            <p class="time">8小时前</p>
+                            <p>{{item.title}}</p>
+                            <p class="time">{{item.time}}</p>
                         </div>
-                        <img src="" alt="">
+                        <img :src="item.image">
                     </li>
                 </ul> 
             </div>
@@ -42,8 +44,55 @@
             el: '#box',
             data:{
                 mescroll: null,
-                menudata: ['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接','买房风险'],
-                pdlist: [1,1,1,1,1]
+                menudata: ['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接'],
+                pdlist: [],
+                // mock数据
+                mockdata0: [
+                    {title: '二手房交易的详细流程及注意事项',time: '2小时',image: './imgs/default.png',contentUrl:'../detailpage/guideDetail11.html'},
+                    {title: '买二手房需要考察什么？',time: '2小时',image: './imgs/12.jpg',contentUrl:'../detailpage/guideDetail12.html'},
+                    {title: '买房须知：定金、订金、诚意金、意向金有何区别？',time: '2小时',image: './imgs/13.jpg',contentUrl:'../detailpage/guideDetail13.html'},
+                    {title: '房屋装修知识详解',time: '2小时',image: './imgs/14.jpg',contentUrl:'../detailpage/guideDetail14.html'},
+                    {title: '房屋基础知识详解',time: '2小时',image: './imgs/15.jpg',contentUrl:'../detailpage/guideDetail15.html'},
+                ],
+                mockdata1: [
+                    {title: '买房六大要点',time: '2小时',image: './imgs/21.jpg',contentUrl:'../detailpage/guideDetail21.html'},
+                    {title: '你不可不知的选房技巧 四大细节千万别忽略',time: '2小时',image: './imgs/22.jpg',contentUrl:'../detailpage/guideDetail22.html'},
+                    {title: '选房时户型朝向很重要',time: '2小时',image: './imgs/23.jpg',contentUrl:'../detailpage/guideDetail23.html'},
+                    {title: '如何选择楼层',time: '2小时',image: './imgs/24.jpg',contentUrl:'../detailpage/guideDetail24.html'},
+                    {title: '如何选得好房子',time: '2小时',image: './imgs/25.jpg',contentUrl:'../detailpage/guideDetail25.html'},
+                ],
+                mockdata2: [
+                    {title: '购房签订认购书后反悔定金可以退吗',time: '2小时',image: './imgs/31.jpg',contentUrl:'../detailpage/guideDetail31.html'},
+                    {title: '签订新房认购书要注意哪些问题？',time: '2小时',image: './imgs/32.jpg',contentUrl:'../detailpage/guideDetail32.html'},
+                    {title: '签订二手房购房合同',time: '2小时',image: './imgs/33.jpg',contentUrl:'../detailpage/guideDetail33.html'},
+                    {title: '二手房产权审核',time: '2小时',image: './imgs/34.jpg',contentUrl:'../detailpage/guideDetail34.html'},
+                    {title: '签订合同时的注意事项',time: '2小时',image: './imgs/35.jpg',contentUrl:'../detailpage/guideDetail35.html'},
+                ],
+                mockdata3: [
+                    {title: '二手房按揭贷款流程',time: '2小时',image: './imgs/41.jpg',contentUrl:'../detailpage/guideDetail41.html'},
+                    {title: '一次性付款买房的注意事项',time: '2小时',image: './imgs/42.jpg',contentUrl:'../detailpage/guideDetail42.html'},
+                    {title: '二手房买卖中如保约定付款方式？',time: '2小时',image: './imgs/43.jpg',contentUrl:'../detailpage/guideDetail43.html'},
+                    {title: '首套房和二套房贷款有什么区别 认定标准又是什么',time: '2小时',image: './imgs/44.jpg',contentUrl:'../detailpage/guideDetail44.html'},
+                    {title: '住房公积金贷款流程',time: '2小时',image: './imgs/45.jpg',contentUrl:'../detailpage/guideDetail45.html'},
+                ],
+                mockdata4: [
+                    {title: '中的一：买二手房需要交纳的税费',time: '2小时',image: './imgs/51.jpg',contentUrl:'../detailpage/guideDetail51.html'},
+                    {title: '二手房过户流程',time: '2小时',image: './imgs/52.jpg',contentUrl:'../detailpage/guideDetail52.html'},
+                    {title: '父母房产过户给子女，需要哪些费用和流程？',time: '2小时',image: './imgs/53.jpg',contentUrl:'../detailpage/guideDetail53.html'},
+                    {title: '房屋过户：买卖、赠与、继续哪个划算？',time: '2小时',image: './imgs/54.jpg',contentUrl:'../detailpage/guideDetail54.html'},
+                    {title: '委托办理房产过户？这些教你轻松应对',time: '2小时',image: './imgs/55.jpg',contentUrl:'../detailpage/guideDetail55.html'},
+                ],
+                mockdata5: [
+                    {title: '二手房交房流程，这十步必不可少',time: '2小时',image: './imgs/61.jpg',contentUrl:'../detailpage/guideDetail61.html'},
+                    {title: '二手房收房验房最全攻略',time: '2小时',image: './imgs/62.jpg',contentUrl:'../detailpage/guideDetail62.html'},
+                    {title: '二手房交接五大指南，确定原户主户已迁出',time: '2小时',image: './imgs/63.jpg',contentUrl:'../detailpage/guideDetail63.html'},
+                    {title: '买了二手房，水电煤如何过户呢',time: '2小时',image: './imgs/64.jpg',contentUrl:'../detailpage/guideDetail64.html'},
+                    {title: '和物业打交道，知道这些很有用',time: '2小时',image: './imgs/65.jpg',contentUrl:'../detailpage/guideDetail65.html'},
+                ],
+                selectNum: 0,
+            },
+            created() {
+                this.pdlist = this.mockdata0;
             },
             mounted(){
 				//解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
@@ -55,7 +104,7 @@
 						//page:{size:8}, //可配置每页8条数据,默认10
 						empty:{ //配置列表无任何数据的提示
 							warpId:"dataList",
-							icon : "imgs/imgs.png" , 
+							icon : "imgs/imgs.jpg" , 
 						  	tip : "亲,暂无相关数据哦~" , 
 						  	btntext : "去逛逛 >" , 
 						  	btnClick : function() {
@@ -66,6 +115,24 @@
 				});
             },
             methods:{
+                selectItem(index) {
+                    this.selectNum = index;
+                    switch(index){
+                        case 0:  this.pdlist = this.mockdata0;break;
+                        case 1:  this.pdlist = this.mockdata1;break;
+                        case 2:  this.pdlist = this.mockdata2;break;
+                        case 3:  this.pdlist = this.mockdata3;break;
+                        case 4:  this.pdlist = this.mockdata4;break;
+                        case 5:  this.pdlist = this.mockdata5;break;
+                        case 6:  this.pdlist = this.mockdata6;break;
+                        case 7:  this.pdlist = this.mockdata7;break;
+                        case 8:  this.pdlist = this.mockdata8;break;
+                    }
+               
+                },
+                detialh5page(index) {
+                    location.href=this.pdlist[index].contentUrl;
+                },
 				upCallback(page) {
                     //联网加载数据
                     axios.get(TWOHOUSEUSED,{

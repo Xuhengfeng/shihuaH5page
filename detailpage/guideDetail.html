@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>指南详情 (模版文件勿删)</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="./css/guideDetail.css">
+    <script src="../js/response.js"></script>
+</head>
+<body>
+    <div id="box">
+        <header>
+            <div class="title">2018最新购房指南手机2018最新购房指南手机</div>
+            <div class="publishTime">8小时前</div>
+        </header>
+        <section>
+            <div class="img"><img src="./imgs/sell.png" alt=""></div>
+            <div>
+                <p v-for="item in 5">内容内容内容内容内容内容内容内容内容内
+                        内容容内容内容内容内容内容内容内容内容内容内容内容
+                        内容容内容内容内容内容内容内容内容内容内容内容内容
+                        内容容内容内容内容内容内容内容内容内容内容内容内容
+                    内容容内容内容内容内容内容内容内容内容内容内容内容</p>             
+            </div>
+        </section>
+    </div>
+    <script src="../js/response.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/axiosurl.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data: {}
+        })
+    </script>
+</body>
+</html>
