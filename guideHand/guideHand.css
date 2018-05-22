@@ -1,0 +1,65 @@
+*{
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+}
+html,body{width: 100%}
+nav{
+    background: #f9f9f9;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+nav .menu{
+    width: 100%;
+    overflow-x: scroll;
+    display: flex;
+    flex-flow:row nowrap
+}
+nav li{
+    flex:1.6rem 0 0;
+    width: 1.6rem;
+    text-align: center;
+    font-size: 0.28rem;
+    height: 0.7rem;
+    line-height: 0.7rem;
+    background: #f9f9f9
+}
+
+/*mescroll 滚动区域*/
+.mescroll{
+    position: fixed;
+    top: 0.7rem;
+    bottom: 0;
+    height: auto;
+}
+.list li{
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0.4rem 0;
+    margin: 0 0.24rem;
+    border-bottom: 1px solid #e6e6e6;
+}
+.list li img{
+    width: 2.20rem;
+    height: 1.6rem;
+    background: red;
+    margin-left: .32rem;
+}
+.list li .content{flex: 1}
+.list li .content p:first-child{
+    font-size: 0.32rem;
+    color: #000000;
+    line-height: 1.5;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-align: justify;
+    margin-bottom: 0.3rem;
+}
+.time{
+    font-size: .29rem;
+    color: #999999;
+}

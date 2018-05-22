@@ -7,62 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>购房指南</title>
     <link rel="stylesheet" href="../css/reset.css">
-    <script>
-        window.onload=window.onpageShow=window.onresize=function(){
-            var wWidth = window.innerWidth;
-            if(wWidth>=414) wWidth = 414;
-            document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
-        }
-    </script>
-    <style>
-        html,body{width: 100%}
-        nav{background: #f9f9f9}
-        nav .menu{
-            width: 100%;
-            overflow-x: scroll;
-            display: flex;
-            flex-flow:row nowrap
-        }
-        nav li{
-            flex:1.6rem 0 0;
-            width: 1.6rem;
-            text-align: center;
-            font-size: 0.28rem;
-            height: 0.7rem;
-            line-height: 0.7rem;
-            background: #f9f9f9
-        }
-        section li{
-            display: flex;
-            flex-flow: row nowrap;
-            padding: 0.4rem 0;
-            margin: 0 0.24rem;
-            border-bottom: 1px solid #e6e6e6;
-        }
-        section li img{
-            width: 2.20rem;
-            height: 1.6rem;
-            background: red;
-            margin-left: .32rem;
-        }
-        section li .content{flex: 1}
-        section li .content p:first-child{
-            font-size: 0.32rem;
-            color: #000000;
-            line-height: 1.5;
-            overflow : hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            text-align: justify;
-            margin-bottom: 0.3rem;
-        }
-        .time{
-            font-size: .29rem;
-            color: #999999;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/mescroll.min.css">
+    <link rel="stylesheet" href="../guideHand/guideHand.css">
+    
 </head>
 <body>
     <div id="box">
@@ -72,23 +19,81 @@
             </ul>
         </nav>
         <section>
-            <ul class="list">
-                <li v-for="item in 5">
-                    <div class="content">
-                        <p>需求：点击A页面跳转至B页面，在B页面点击手机物理回退键或者history.back回退时，需要在A页面判断当前页面是否是回退回来的页面，而不是新加载的。这里用到一个</p>
-                        <p class="time">8小时前</p>
-                    </div>
-                    <img src="" alt="">
-                </li>
-            </ul> 
+            <div id="mescroll" class="mescroll">
+                <ul id="dataList" class="list">
+                    <li v-for="item in pdlist">
+                        <div class="content">
+                            <p>需求：点击A页面跳转至B页面，在B页面点击手机物理回退键或者history.back回退时，需要在A页面判断当前页面是否是回退回来的页面，而不是新加载的。这里用到一个</p>
+                            <p class="time">8小时前</p>
+                        </div>
+                        <img src="" alt="">
+                    </li>
+                </ul> 
+            </div>
         </section>
     </div>
+    <script src="../js/response.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
+    <script src="../js/mescroll.min.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
             data:{
-                menudata:['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接','买房风险']
+                mescroll: null,
+                menudata: ['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接','买房风险'],
+                pdlist: [1,1,1,1,1]
+            },
+            mounted(){
+				//解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
+				var self = this;
+				self.mescroll = new MeScroll("mescroll", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+					up: {
+						callback: self.upCallback, //上拉回调
+						isBounce: false, //此处禁止ios回弹,解析(务必认真阅读,特别是最后一点): http://www.mescroll.com/qa.html#q10
+						//page:{size:8}, //可配置每页8条数据,默认10
+						empty:{ //配置列表无任何数据的提示
+							warpId:"dataList",
+							icon : "imgs/imgs.png" , 
+						  	tip : "亲,暂无相关数据哦~" , 
+						  	btntext : "去逛逛 >" , 
+						  	btnClick : function() {
+						  		alert("点击了去逛逛按钮");
+						  	} 
+						}
+					}
+				});
+            },
+            methods:{
+				upCallback(page) {
+                    //联网加载数据
+                    axios.get(TWOHOUSEUSED,{
+                        headers:{
+                            'Content-Type': "application/json;charset=UTF-8",
+                            'scity': 'beihai'
+                        }
+                    })
+                    .then((res) => {
+
+                    })
+                    .catch(err=>{
+                        setTimeout(()=>{this.mescroll.endErr();},2000)
+                    })
+					// 	//更新列表数据
+					// 	self.pdlist = self.pdlist.concat(curPageData);
+					// 	//方法一(推荐): 后台接口有返回列表的总页数 totalPage
+					// 	//self.mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
+						
+					// 	//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
+					// 	//self.mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
+						
+					// 	//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
+					// 	//self.mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+						
+					// 	//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
+					// 	self.mescroll.endSuccess(curPageData.length);
+                }
             }
         }) 
     </script>
