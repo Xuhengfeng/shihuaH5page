@@ -23,19 +23,19 @@
         </header>
         
         <!-- 公积金贷款 商业贷款-->
-        <section v-if="sectionNum == 0||sectionNum == 1">
+        <section v-if="selectNum == 0||selectNum == 1">
             <ul>
                 <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="img/arrows.png"/></li>
                 <li class="price">贷款总额<input v-model="loans" placeholder="0"/><span>万</span></li>
                 <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="img/arrows.png"/></li>
-                <li @click="unfold(2)">贷款利率<input placeholder="按照贷款总额" readonly="readonly"/><img src="img/arrows.png"/></li>
+                <li @click="unfold(2)">贷款利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="img/arrows.png"/></li>
             </ul>
             <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
             <button class="computer">开始计算</button>
         </section>
         
         <!-- 组合贷款 -->
-        <section v-if="sectionNum == 2">
+        <section v-if="selectNum == 2">
             <ul>
                 <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="img/arrows.png"/></li>
                 <li class="price">贷款总额<input v-model="loans" placeholder="0"/><span>万</span></li>
@@ -55,23 +55,24 @@
             <div class="shadow" v-if="isCancel" @click="cancel()"></div>                  
             <transition name="slide-fade">
                 <div class="dialog" v-if="isCancel">
-
-                    <div v-if="sectionNum == 0||sectionNum == 1">
+                    <!-- 公积金贷款 商业贷款-->
+                    <div v-if="selectNum == 0||selectNum == 1">
                         <div class="title" 
                              v-for="(item,index) in titles"
                              v-if="titleIndex == index">{{item}}<span @click="cancel">取消</span></div>
                         <ul>
-                            <li v-for="item in calcWay">{{item}}</li>
+                            <li v-for="item in travers">
+                                {{item}}<span v-if="titleIndex == 1">年</span>
+                            </li>
                         </ul>
                     </div>
-
-                    <div v-if="sectionNum == 2">
+                    
+                    <!-- 组合贷款 -->
+                    <div v-if="selectNum == 2">
                         <div class="title" 
                              v-for="(item,index) in titles"
                              v-if="titleIndex == index">{{item}}<span @click="cancel">取消</span></div>
-                        <ul>
-                            <li v-for="item in calcWay">{{item}}</li>
-                        </ul>
+                        <ul><li v-for="item in calcWay">{{item}}</li></ul>
                     </div>
 
                 </div>
@@ -85,9 +86,16 @@
                 menu:['公积金贷款','商业贷款','组合贷款'],
                 loans: 0,//贷款总额
                 selectNum: 0,//默认选中第一个
-                sectionNum: 0,//显示对应的section
                 isCancel: false,//打开展开选项
+                travers: null,//展开项遍历对象
+                // 计算方式
                 calcWay: ['按房价总额','按贷款总额'],
+                // 贷款年限
+                loanYears: 30, 
+                // 贷款利率
+                loanRate: ['最新基准利率','最新基准利率9.5折','最新基准利率9.5折'],
+
+                //展开项的标题
                 titles: ['计算方式','贷款年限','贷款利率'],
                 titleIndex: 0,
             },
@@ -95,7 +103,6 @@
                 // 菜单
                 selectItem(index) {
                    this.selectNum = index;
-                   this.sectionNum = index;
                 },
                 // 关闭展开项
                 cancel() {
@@ -105,9 +112,18 @@
                 unfold(num) {
                     this.isCancel = true;
                     switch(num){
-                        case 0: this.titleIndex = 0;break;
-                        case 1: this.titleIndex = 1;break;
-                        case 2: this.titleIndex = 2;break;
+                        case 0: 
+                            this.titleIndex = 0;
+                            this.travers = this.calcWay;
+                            break;
+                        case 1: 
+                            this.titleIndex = 1;
+                            this.travers = this.loanYears;
+                            break;
+                        case 2: 
+                            this.titleIndex = 2;
+                            this.travers = this.loanRate;
+                            break;
                     }
                 }
                 

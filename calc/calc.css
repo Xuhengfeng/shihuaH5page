@@ -93,8 +93,15 @@ li img{
     background: #ffffff;
     position: fixed;
     bottom: 0;
-    height: 40%;
+    height: 5.5rem;
     width: 100%;
+}
+.dialog>div{
+    height: 5.5rem;
+}
+.dialog ul{
+    height: 4.6rem;
+    overflow-y: auto;
 }
 .dialog .title{
     font-size: 0.3rem;
