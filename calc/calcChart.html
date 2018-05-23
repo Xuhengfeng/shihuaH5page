@@ -10,6 +10,73 @@
     <script src="../js/echarts.common.min.js"></script>
     <script src="../js/response.js"></script>
     <script src="../js/vue.min.js"></script>
+    <style>
+        html,body{font-size: 0.3rem}
+        .fr{float: right}
+        section .chart{
+            height: 4rem;
+        }
+        ul li{
+            margin: 0 0.3rem;
+            font-size: 0.3rem;
+            border-bottom:1px solid #e6e6e6;
+            height: 1rem;
+            line-height: 1rem;
+        }
+        .tips{
+            margin-left: 0.2rem;
+            font-size: 0.2rem;
+            color: #666666;
+        }
+        .tips2{
+            height: 1rem;
+            line-height: 1rem;
+            font-size: 0.2rem;
+            color: #666666;
+            text-align: center;
+        }
+        .chart{
+            display: flex;
+            flex-flow: row nowrap; 
+            min-height: 200px;
+            height: 2rem;
+        }
+        .chart>div{
+            flex: 1;
+            height: 100%;
+        }
+        /* 图表 */
+        .chart .description{
+            padding-left: 0.3rem;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center; 
+        }
+        .description>div{
+            position: relative;
+            height: 0.5rem;
+            line-height: 0.5rem;
+        }
+        .description>div::before{
+            position: absolute;
+            left: -0.3rem;
+            top: 50%;
+            content: '';
+            display: block;
+            width: 0.2rem;
+            height: 0.2rem;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+        .description>div:nth-of-type(1):before{
+            background: red;
+        }
+        .description>div:nth-of-type(2):before{
+            background: green;
+        }
+        
+
+    </style>
 </head>
 <body>
     <div id="box">
@@ -17,16 +84,96 @@
         <section>
                 <ul>
                     <li class="chart">
-                        <div class="chartcontent"></div>
+                        <!-- 为ECharts准备一个具备大小 -->
+                        <div ref="chartcxt" class="chartcontent"></div>
                         <div class="description">
-                            <div>贷款总额: 3000元</div>
-                            <div>支付利息: 222元</div>
+                            <div>贷款总额 : 3000元</div>
+                            <div>支付利息 : 222元</div>
                         </div>
                     </li>
-                    <li>2</li>
-                    <li>3</li>                    
+                    <li>贷款总额 : 30万<div class="fr">还款总额 : <span>52.2万</span></div></li>
+                    <li>支付利息 : 22.2万<div class="fr">贷款月数 : <span>52.2万</span></div></li>                    
+                    <li>月均还款 : 22.2万<span class="tips">(首月后每月递减3元)</span></li>                    
+                    <p class="tips2">以上结果仅供参考,请以当地实际情况为准。</p>
                 </ul>
         </section>
     </div>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data: {},
+            methods: {
+
+            },
+            mounted() {
+                // 初始化echarts实例  
+                var myChart = this.$refs.chartcxt; 
+                //自适应宽高
+                var myChartContainer = function () {
+                    myChart.style.width = 17+'rem';
+                    // myChart.style.width = 50%;
+
+                    // myChart.style.height = 17+'rem';
+                    myChart.style.height = 17+'rem';
+                };
+                myChartContainer();
+                var myChart = echarts.init(myChart);  
+                
+                // 指定图表的配置项和数据  
+                option = {
+                    //设置图表与容器的间隔
+                    grid:{
+                        x:0,
+                        y:0,
+                        x2:0,
+                        y2:0,
+                        borderWidth:1
+                    },
+                    color: ['red','white','green','white'],
+                    series: [
+                        {
+                            name:'访问来源',
+                            type:'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false,
+                                    textStyle: {
+                                        fontSize: '15',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:[
+                                {value:200, name:'直接访问'},
+                                {value:9, name:'邮件营销'},
+                                {value:234, name:'联盟广告'},
+                                {value:9, name:'视频广告'},
+                            ]
+                        }
+                    ]
+                };
+
+                // 使用刚指定的配置项和数据显示图表。  
+                myChart.setOption(option);  
+                //浏览器大小改变时重置大小
+                // window.onresize = function () {
+                //     console.log(12121)
+                //     myChart.resize();
+                //     myChartContainer();
+                // };
+            }
+        })
+    </script>
 </body>
 </html>
