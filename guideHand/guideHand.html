@@ -48,7 +48,8 @@
                 pdlist: [],
                 pdlist2: [],
                 selectNum: 0,
-                urlparams: null
+                urlparams: null,
+                page: 1
             },
             mounted(){
 				//解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
@@ -91,7 +92,9 @@
             methods:{
                 selectItem(index) {
                     this.selectNum = index;
-                    this.pdlist = this.pdlist2[index];                    
+                    this.page = 1;
+                    this.pdlist = this.pdlist2[index];    
+                    this.upCallback();                
                 },
                 detialh5page(index) {
                     var url = this.pdlist.infoContentList[index].contentUrl;
@@ -100,6 +103,8 @@
                 },
 				upCallback() {
                     let city = 'beihai';
+                    let page = this.page++;
+                    console.log(page)
                     this.guideDataRequest(1);
 					// 	//更新列表数据
 					// 	self.pdlist = self.pdlist.concat(curPageData);
@@ -123,6 +128,7 @@
                         var arr = res.data.data;
                         this.pdlist = arr[0];
                         this.pdlist2 = arr;
+                        this.mescroll.endErr();
                     })
                     .catch(err=>{
                         this.mescroll.endErr();
