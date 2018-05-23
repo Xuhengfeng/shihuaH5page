@@ -46,7 +46,6 @@ let vm = new Vue({
     },
     methods: {
         twoHouseRentListRequest(){
-        	console.log(TWOHOUSEUSED+"?sdidStr="+this.project.idlist+"&scity="+this.project.scity)
             axios.get(TWOHOUSEUSED+"?sdidStr="+this.project.idlist+"&scity="+this.project.scity,{
             	headers:{
             		'Content-Type': "application/json;charset=UTF-8",

@@ -17,3 +17,6 @@ let TWOHOUSEUSED = SERVER_IP + "/contrast/used-house";  //二手房对比
 let HOUSECONTRAST = SERVER_IP + "/statistics/houseUsed"; //查询房价统计
 let STATISTICS = SERVER_IP + "/statistics/trend"; //查询 趋势统计
 let HOUSINGCS = SERVER_IP + '/statistics/housing60-days'//查看最近60天成交房源
+let GUIDEHAND = SERVER_IP + '/info/purchase-guide/index'//购房指南首页信息
+let GUIDEHANDETAIL = SERVER_IP + '/info/'//获取资讯内容详情
+

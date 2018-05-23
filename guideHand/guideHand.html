@@ -23,12 +23,12 @@
         <section>
             <div id="mescroll" class="mescroll">
                 <ul id="dataList" class="list">
-                    <li v-for="(item,index) in pdlist" @click="detialh5page(index)">
+                    <li v-for="(item,index) in pdlist.infoContentList" @click="detialh5page(index)">
                         <div class="content">
                             <p>{{item.title}}</p>
-                            <p class="time">{{item.time}}</p>
+                            <p class="time">{{item.publishDateTime|timefilter}}</p>
                         </div>
-                        <img :src="item.image">
+                        <img :src="item.imageUrl">
                     </li>
                 </ul> 
             </div>
@@ -46,53 +46,9 @@
                 mescroll: null,
                 menudata: ['准备买房','看房/选房','签约/订房','全款/贷款','缴税/过户','入住/交接'],
                 pdlist: [],
-                // mock数据
-                mockdata0: [
-                    {title: '二手房交易的详细流程及注意事项',time: '2小时',image: './imgs/default.png',contentUrl:'../detailpage/guideDetail11.html'},
-                    {title: '买二手房需要考察什么？',time: '2小时',image: './imgs/12.jpg',contentUrl:'../detailpage/guideDetail12.html'},
-                    {title: '买房须知：定金、订金、诚意金、意向金有何区别？',time: '2小时',image: './imgs/13.jpg',contentUrl:'../detailpage/guideDetail13.html'},
-                    {title: '房屋装修知识详解',time: '2小时',image: './imgs/14.jpg',contentUrl:'../detailpage/guideDetail14.html'},
-                    {title: '房屋基础知识详解',time: '2小时',image: './imgs/15.jpg',contentUrl:'../detailpage/guideDetail15.html'},
-                ],
-                mockdata1: [
-                    {title: '买房六大要点',time: '2小时',image: './imgs/21.jpg',contentUrl:'../detailpage/guideDetail21.html'},
-                    {title: '你不可不知的选房技巧 四大细节千万别忽略',time: '2小时',image: './imgs/22.jpg',contentUrl:'../detailpage/guideDetail22.html'},
-                    {title: '选房时户型朝向很重要',time: '2小时',image: './imgs/23.jpg',contentUrl:'../detailpage/guideDetail23.html'},
-                    {title: '如何选择楼层',time: '2小时',image: './imgs/24.jpg',contentUrl:'../detailpage/guideDetail24.html'},
-                    {title: '如何选得好房子',time: '2小时',image: './imgs/25.jpg',contentUrl:'../detailpage/guideDetail25.html'},
-                ],
-                mockdata2: [
-                    {title: '购房签订认购书后反悔定金可以退吗',time: '2小时',image: './imgs/31.jpg',contentUrl:'../detailpage/guideDetail31.html'},
-                    {title: '签订新房认购书要注意哪些问题？',time: '2小时',image: './imgs/32.jpg',contentUrl:'../detailpage/guideDetail32.html'},
-                    {title: '签订二手房购房合同',time: '2小时',image: './imgs/33.jpg',contentUrl:'../detailpage/guideDetail33.html'},
-                    {title: '二手房产权审核',time: '2小时',image: './imgs/34.jpg',contentUrl:'../detailpage/guideDetail34.html'},
-                    {title: '签订合同时的注意事项',time: '2小时',image: './imgs/35.jpg',contentUrl:'../detailpage/guideDetail35.html'},
-                ],
-                mockdata3: [
-                    {title: '二手房按揭贷款流程',time: '2小时',image: './imgs/41.jpg',contentUrl:'../detailpage/guideDetail41.html'},
-                    {title: '一次性付款买房的注意事项',time: '2小时',image: './imgs/42.jpg',contentUrl:'../detailpage/guideDetail42.html'},
-                    {title: '二手房买卖中如保约定付款方式？',time: '2小时',image: './imgs/43.jpg',contentUrl:'../detailpage/guideDetail43.html'},
-                    {title: '首套房和二套房贷款有什么区别 认定标准又是什么',time: '2小时',image: './imgs/44.jpg',contentUrl:'../detailpage/guideDetail44.html'},
-                    {title: '住房公积金贷款流程',time: '2小时',image: './imgs/45.jpg',contentUrl:'../detailpage/guideDetail45.html'},
-                ],
-                mockdata4: [
-                    {title: '中的一：买二手房需要交纳的税费',time: '2小时',image: './imgs/51.jpg',contentUrl:'../detailpage/guideDetail51.html'},
-                    {title: '二手房过户流程',time: '2小时',image: './imgs/52.jpg',contentUrl:'../detailpage/guideDetail52.html'},
-                    {title: '父母房产过户给子女，需要哪些费用和流程？',time: '2小时',image: './imgs/53.jpg',contentUrl:'../detailpage/guideDetail53.html'},
-                    {title: '房屋过户：买卖、赠与、继续哪个划算？',time: '2小时',image: './imgs/54.jpg',contentUrl:'../detailpage/guideDetail54.html'},
-                    {title: '委托办理房产过户？这些教你轻松应对',time: '2小时',image: './imgs/55.jpg',contentUrl:'../detailpage/guideDetail55.html'},
-                ],
-                mockdata5: [
-                    {title: '二手房交房流程，这十步必不可少',time: '2小时',image: './imgs/61.jpg',contentUrl:'../detailpage/guideDetail61.html'},
-                    {title: '二手房收房验房最全攻略',time: '2小时',image: './imgs/62.jpg',contentUrl:'../detailpage/guideDetail62.html'},
-                    {title: '二手房交接五大指南，确定原户主户已迁出',time: '2小时',image: './imgs/63.jpg',contentUrl:'../detailpage/guideDetail63.html'},
-                    {title: '买了二手房，水电煤如何过户呢',time: '2小时',image: './imgs/64.jpg',contentUrl:'../detailpage/guideDetail64.html'},
-                    {title: '和物业打交道，知道这些很有用',time: '2小时',image: './imgs/65.jpg',contentUrl:'../detailpage/guideDetail65.html'},
-                ],
+                pdlist2: [],
                 selectNum: 0,
-            },
-            created() {
-                this.pdlist = this.mockdata0;
+                urlparams: null
             },
             mounted(){
 				//解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
@@ -101,7 +57,6 @@
 					up: {
 						callback: self.upCallback, //上拉回调
 						isBounce: false, //此处禁止ios回弹,解析(务必认真阅读,特别是最后一点): http://www.mescroll.com/qa.html#q10
-						//page:{size:8}, //可配置每页8条数据,默认10
 						empty:{ //配置列表无任何数据的提示
 							warpId:"dataList",
 							icon : "imgs/imgs.jpg" , 
@@ -114,39 +69,39 @@
 					}
 				});
             },
+            filters:{
+            	timefilter(val){
+            		var time;
+            		var diff = (new Date().getTime() - val)/1000;
+			        var h = diff/3600;//小时
+			        var hours = parseInt(h);
+			        var m = (h - hours)*60;//分钟
+			        var minute = parseInt(m);
+			        var s = (m - minute)*60;//秒
+			        var second = parseInt(s);
+			        var day = (h/24)>0? parseInt(h/24): 0;
+			        if(day==0){
+//		          	  time = hours + '小时' + minute + '分' + second + '秒';
+		          	  time = hours + '小时' + minute + '分前';
+			      	}else{
+			          time = day + '天前' + hours + '小时' + minute + '分' + second + '秒';
+			        }
+			      	return time
+            	}
+            },
             methods:{
                 selectItem(index) {
                     this.selectNum = index;
-                    switch(index){
-                        case 0:  this.pdlist = this.mockdata0;break;
-                        case 1:  this.pdlist = this.mockdata1;break;
-                        case 2:  this.pdlist = this.mockdata2;break;
-                        case 3:  this.pdlist = this.mockdata3;break;
-                        case 4:  this.pdlist = this.mockdata4;break;
-                        case 5:  this.pdlist = this.mockdata5;break;
-                        case 6:  this.pdlist = this.mockdata6;break;
-                        case 7:  this.pdlist = this.mockdata7;break;
-                        case 8:  this.pdlist = this.mockdata8;break;
-                    }
-               
+                    this.pdlist = this.pdlist2[index];                    
                 },
                 detialh5page(index) {
-                    location.href=this.pdlist[index].contentUrl;
+                    var url = this.pdlist.infoContentList[index].contentUrl;
+                    var params = this.parseUrl(url);
+                    location.href="../detailpage/guideDetail.html?id="+params.id;
                 },
-				upCallback(page) {
-                    //联网加载数据
-                    axios.get(TWOHOUSEUSED,{
-                        headers:{
-                            'Content-Type': "application/json;charset=UTF-8",
-                            'scity': 'beihai'
-                        }
-                    })
-                    .then((res) => {
-
-                    })
-                    .catch(err=>{
-                        setTimeout(()=>{this.mescroll.endErr();},2000)
-                    })
+				upCallback() {
+                    let city = 'beihai';
+                    this.guideDataRequest(1);
 					// 	//更新列表数据
 					// 	self.pdlist = self.pdlist.concat(curPageData);
 					// 	//方法一(推荐): 后台接口有返回列表的总页数 totalPage
@@ -160,6 +115,28 @@
 						
 					// 	//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
 					// 	self.mescroll.endSuccess(curPageData.length);
+                },
+                guideDataRequest(page, city) {
+                    axios.get(GUIDEHAND,{
+                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
+                    })
+                    .then((res) => {
+                        var arr = res.data.data;
+                        this.pdlist = arr[0];
+                        this.pdlist2 = arr;
+                    })
+                    .catch(err=>{
+                        this.mescroll.endErr();
+                    })
+                },
+                parseUrl(url) {
+                    var urlStr=url.split("?")[1].split("&");
+                    var urlparams = {};
+                    for( let i=0;i<urlStr.length;i++){
+                        var item = urlStr[i].split("=")
+                        urlparams[item[0]]=item[1]
+                    }
+                    return urlparams;
                 }
             }
         }) 

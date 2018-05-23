@@ -5,7 +5,12 @@
 		<meta charset="UTF-8">
 		<title>对比列表</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+		<script>
+			window.onresize=window.onpageshow=function(){
+				var wWidth = window.innerWidth;
+				document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
+			}
+		</script>
 		<style>
 			*{
 				padding:0;
@@ -187,12 +192,7 @@
 				color: #222222;
 			}
 		</style>
-		<script>
-			window.onload=window.onresize=function(){
-				var wWidth = window.innerWidth;
-				document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
-			}
-		</script>
+		
 	</head>
 	<body>
 		<div id="app">
