@@ -25,13 +25,13 @@
         <!-- 公积金贷款 商业贷款-->
         <section v-if="selectNum == 0||selectNum == 1">
             <ul>
-                <li @click="unfold(0)">计算方式<input placeholder="按贷款总额" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(0)">计算方式<input v-model="mode" placeholder="按贷款总额" readonly="readonly"/><img src="imgs/arrows.png"/></li>
                 <li class="price">贷款总额<input v-model="loans" placeholder="0"/><span>万</span></li>
-                <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
-                <li @click="unfold(2)">贷款利率<input placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(1)">贷款年限<input v-model="years" placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
+                <li @click="unfold(2)">贷款利率<input v-model="rate" placeholder="最新基准利率(3.25%)" readonly="readonly"/><img src="imgs/arrows.png"/></li>
             </ul>
             <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
-            <button class="computer">开始计算</button>
+            <button class="computer" @click="calcResult()">开始计算</button>
         </section>
         
         <!-- 组合贷款 -->
@@ -46,7 +46,7 @@
                 <li @click="unfold(1)">贷款年限<input placeholder="30年" readonly="readonly"/><img src="imgs/arrows.png"/></li>
             </ul>
             <p class="tips">贷款利率仅供计算使用,实际交易利率折扣由银行评估</p>
-            <button class="computer">开始计算</button>
+            <button class="computer" @click="calcResult()">开始计算</button>
         </section>
 
         <!-- 对应的展开项 -->
@@ -61,9 +61,15 @@
                              v-for="(item,index) in titles"
                              v-if="titleIndex == index">{{item}}<span @click="cancel">取消</span></div>
                         <ul>
-                            <li v-for="item in travers">
+                            <li :class="selectNum2==index?'bgColor2':''"
+                                v-for="(item,index) in travers" 
+                                @click="selectOption(item,index)">
                                 {{item}}<span v-if="titleIndex == 1">年</span>
                             </li>
+                            <div class="ownrate" v-if="titleIndex == 2">
+                                自定义利率:<input/>
+                                <button>确定</button>
+                            </div>
                         </ul>
                     </div>
                     
@@ -84,20 +90,22 @@
             el: '#box',
             data:{
                 menu:['公积金贷款','商业贷款','组合贷款'],
+                // input的双向绑定
+                mode: null,//计算模式
                 loans: 0,//贷款总额
-                selectNum: 0,//默认选中第一个
+                years: null,//年
+                rate: null,//比例
+
+                selectNum: 0,//tab切换的索引
+                selectNum2: 0,//展开选项的索引
                 isCancel: false,//打开展开选项
                 travers: null,//展开项遍历对象
-                // 计算方式
-                calcWay: ['按房价总额','按贷款总额'],
-                // 贷款年限
-                loanYears: 30, 
-                // 贷款利率
-                loanRate: ['最新基准利率','最新基准利率9.5折','最新基准利率9.5折'],
-
-                //展开项的标题
-                titles: ['计算方式','贷款年限','贷款利率'],
-                titleIndex: 0,
+               
+                calcWay: ['按房价总额','按贷款总额'], //计算方式
+                loanYears: 30,  //贷款年限
+                loanRate: ['最新基准利率','最新基准利率9.5折','最新基准利率9.5折'], //贷款利率
+                titles: ['计算方式','贷款年限','贷款利率'],//展开项的标题
+                titleIndex: 0,//展开项的标题的索引
             },
             methods:{
                 // 菜单
@@ -108,7 +116,7 @@
                 cancel() {
                     this.isCancel = false;
                 },
-                // 展开项
+                // 控制展开项内容
                 unfold(num) {
                     this.isCancel = true;
                     switch(num){
@@ -125,8 +133,23 @@
                             this.travers = this.loanRate;
                             break;
                     }
+                },
+                // 展开项点击
+                selectOption(item,index) {
+                    this.selectNum2 = index;
+                    let num = this.titleIndex;
+                    switch(num){
+                        case 0:this.mode=item;break;
+                        case 1:this.years=item+'年';break;
+                        case 2:this.rate=item;break;
+                    }
+                    this.cancel();
+                },
+                //计算
+                calcResult() {
+                    let result = {};
+                    location.href='./calcChart.html?result='+result;
                 }
-                
             }
         }) 
     </script>
