@@ -62,8 +62,11 @@
         .star{
             width: 0.3rem;
             height: 0.3rem;
-            background: red;
             margin: 0 auto 0.16rem;
+        }
+        .star img{
+            width: 100%;
+            height: 100%;
         }
         section{
             margin-top: 0.2rem;
@@ -87,7 +90,8 @@
             flex: 0.8rem 0 0;
             width: 0.8rem;
             height: 0.8rem;
-            background: red;
+            background: url('./imgs/avatar.png') no-repeat center center;
+            background-size:cover; 
             border-radius: 50%;
             margin-right: 0.2rem;
         }
@@ -103,7 +107,12 @@
         .telphone{
             width:0.33rem;
             height: 0.34rem;
-            background: red;
+        }
+        .message img,
+        .telphone img{
+            display: block;
+            width: 100%;
+            height: 100%;
         }
         .flag{
             height: 0.4rem;
@@ -145,45 +154,45 @@
 <body>
     <div id="box">
         <header>
-            <h3>卖房时,发生的可能法拉第你疯啦的房间辣十多年</h3>
-            <p>开发商的看你发拉速度快你疯啦独食难肥拉到你疯了</p>
+            <h3>{{dataDetail.problemTitle}}</h3>
+            <p>{{dataDetail.problemDescribe}}</p>
             <div class="tag">
-                <span>贷款</span>
-                <span>交易过户</span>
+                <span v-for="item in dataDetail.label">{{item}}</span>
+                <!-- <span>交易过户</span> -->
             </div>
             <div class="description">
                 <div class="one">
-                    <div style="margin-bottom:0.16rem">只如初见</div>
-                    <div>发布于: 2018-02-06</div>
+                    <div style="margin-bottom:0.16rem">{{dataDetail.memberId}}</div>
+                    <div>发布于: {{dataDetail.pubTime|timefilter}}</div>
                 </div>
-                <div class="two" v-if="true">
-                    <div class="star"></div>
+                <div class="two" v-if="addLike" @click="togglelike()">
+                    <div class="star"><img src="imgs/star-off.png"></div>
                     <div>取消关注</div> 
                 </div>
-                <div class="two" v-if="false">
-                    <div class="star"></div>
+                <div class="two" v-else @click="togglelike()">
+                    <div class="star"><img src="imgs/star-on.png"></div>
                     <div>关注</div>
                 </div>
             </div>
         </header>
         <section>
-            <div class="title">共2个回答</div>
+            <div class="title">共{{dataDetail.answerNum}}个回答</div>
             <ul>
                 <li v-for="item in 2">
                     <div class="userInfo">
                         <div class="img"><img src="" alt=""></div>
                         <div class="user">
-                            <div class="message"></div>
-                            <div class="telphone"></div>
-                            <div class="flag gray" v-if="true">待采纳</div>
-                            <div class="flag red" v-else>已采纳</div>
-                            <div class="name">张三</div>
+                            <div class="message"><a href="sms:15857009524"><img src="imgs/duanxin.png"></a></div>
+                            <div class="telphone"><a href="tel:15857009524"><img src="imgs/phone.png"></a></div>
+                            <div class="flag gray" v-if="agree" @click="toggleAgree()">待采纳</div>
+                            <div class="flag red" v-else  @click="toggleAgree()">已采纳</div>
+                            <div class="name">{{dataDetail.consultantName}}</div>
                         </div>
                     </div>
                     <div class="answers">
-                        <div class="answersTime">2018-02-28</div>
-                        <p>内容1内容1内容1内容1内容1内容1内容1内容1</p>
-                        <h4>内容2</h4>
+                        <div class="answersTime">{{dataDetail.answerTime}}</div>
+                        <p>{{dataDetail.answerContent}}</p>
+                        <h4>希望能帮到您！回答满意请点赞采纳！</h4>
                     </div>
                 </li>
             </ul>
@@ -197,7 +206,66 @@
         var vm = new Vue({
                 el: '#box',
                 data: {
+                    dataDetail: null,
+                    urlparams: null,
+                    city: '',
+                    employeeId: '',
+                    token: '',
+                    addLike: true,
+                    agree: true
+                },
+                created() {
+                    var url = location.href;
+                    // id 列表id
+                    // scityname 城市拼音
+                    // token 尽量都传过来
+                    var url = 'xxxxxxx?id=434&scityname=beihai&token=d2ViX2MxMTE0YzVhLWYwOGEtNDg0OS1iZWM1LTMzZThlOTBmYWM3Ml8w';
+                    var urlparams = this.parseUrl(url);
+                    console.log(urlparams);
 
+                    this.urlparams = urlparams;
+                    this.city = urlparams.scityname;
+                    this.employeeId = this.urlparams.id;
+                    this.token = this.urlparams.token;
+                    this.answersDetialRequest(this.employeeId, this.city);
+                },
+                filters:{
+                    timefilter(val){
+                        var d = new Date(val);
+                        var time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+                        return time;
+                    }
+                },
+                methods: {
+                    togglelike() {
+                        this.addLike = !this.addLike;
+                    },
+                    toggleAgree() {
+                        this.agree = !this.agree;
+                    },
+                    answersDetialRequest(id,city,token) {
+                        axios.get(CONSULTANTINFO+"?employeeId="+id,{
+                            headers:{
+                                'Content-Type': "application/json;charset=UTF-8",
+                                'scity': city,
+                                'unique-code': token
+                            }
+                        })
+                        .then((res) => {
+                            let newData = res.data.data;
+                            newData.label = newData.label.split(',');
+                            this.dataDetail = newData;
+                        })
+                    },
+                    parseUrl(url) {
+                        var urlStr=url.split("?")[1].split("&");
+                        var urlparams = {};
+                        for( let i=0;i<urlStr.length;i++){
+                            var item = urlStr[i].split("=")
+                            urlparams[item[0]]=item[1]
+                        }
+                        return urlparams;
+                    }
                 }
             })
     </script>

@@ -13,14 +13,15 @@ body,html{
     padding:0.4rem 0;
     overflow: hidden;
 }
-.titlediv>div:nth-of-type(1){
+.titlediv .img{
     width:1.6rem;
     height:1.6rem;
     float:left;
     margin-right:0.4rem;
     border-radius: 50%;
     overflow: hidden;
-    background:red;
+    background: #f5f5f5;
+    background-size: cover;
 }
 .titlediv>div:nth-of-type(1)>img{
     float:left;
@@ -113,4 +114,9 @@ body,html{
     float:right;
     height:0.28rem;
     margin-top:0.36rem;
+}
+.nodate{
+    text-align: center;
+    line-height: 1rem;
+    font-size: 0.3rem;
 }

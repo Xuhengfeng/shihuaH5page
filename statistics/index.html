@@ -177,7 +177,7 @@
 			</div>
 		</div>
 	</body>
-	<script src="../js/axiosurl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/axiosurl.js"></script>
 	<script type="text/javascript">
 //		'use strict';
 		let vm = new Vue({
@@ -227,7 +227,6 @@
 		    		this.marketPricelist.reverse()
 		    		this.suiteCountlist.reverse()
 		    		this.monthlist.reverse()
-		    		console.log(this.data)
 		    		this._drawing()
 		    	})
 		    },
@@ -291,24 +290,12 @@
 			        {
 			            type:'line',
 			            data:this.avgPricelist,
-			            color:'#FF4343',
-
-			            markLine: {
-			                data: [
-			                    {type: 'average', name: '平均值'}
-			                ]
-			            }
+			            color:'#FF4343'
 			        },
 			        {
 			            type:'line',
 			            color:'#00B969',
-			            data:this.marketPricelist,
-			            markLine: {
-			                data: [
-			                    {type: 'average', name: '平均值'},
-			                  
-			                ]
-			            }
+			            data:this.marketPricelist
 			        }
 			    ]
 			};
