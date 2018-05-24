@@ -49,6 +49,9 @@ li input{
     text-align: right;
     transform: translateY(-50%);
     outline: none;
+    color: #000000;
+}
+::placeholder {
     color: #999999;
 }
 li img{
@@ -142,9 +145,23 @@ li img{
     height: 1rem;
     line-height: 1rem;
     padding: 0 0.3rem;
+    background: #ffffff;
+}
+.ownrate input{
+    width: 30%;
+    outline: none;
+    background: #f5f5f5;
+    padding: 0.13rem;
+    border-radius: 0.2rem;
 }
 .ownrate button{
-    padding: 0.15rem 0.2rem;
+    margin-left: 15%;
+    padding:  0.1rem 0.2rem;
+    border: 1px solid #ff4343;
+    border-radius: 0.2rem;
+    background: #ffffff;
+    color: #ff4343;
+    outline: none;
 }
 
 /* 高亮颜色 */
