@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>问题详情</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <script src="../js/response.js"></script>
+    <style>
+        body{background: #f9f9f9}
+        header{
+            padding: 0.5rem 0.24rem 0.4rem; 
+            background: #ffffff;
+        }
+        header h3{
+            font-size: 0.36rem;
+            color: #222222;
+            line-height: 1.5;
+            padding-right: 0.22rem;
+        }
+        header p{
+            font-size: 0.3rem;
+            color: #999999;
+            line-height: 1.5;
+            margin: 0.3rem 0;
+            padding-right: 0.22rem;
+        }
+        .tag{
+            overflow: hidden;
+            margin-bottom: 0.4rem
+        }
+        .tag span{
+            padding: 0.1rem 0.1rem;
+            font-size: 0.2rem;
+            color: #999999;
+            background: #f2f2f2 ;
+            float: left;
+            margin-right: 0.1rem;
+            border-radius: 0.1rem;
+        }
+        .description{
+            display: flex;
+            border-top: 1px solid #e6e6e6;
+            padding:0.4rem 0 0;
+            flex-flow: row nowrap;
+            justify-content:  center;
+            align-items: space-around;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+        .description .two{
+            flex: 1.8rem 0 0;
+            width: 1.8rem;
+            font-size: 0.26rem;
+            text-align: center;
+        }
+        .description .one{
+            flex: 1;
+            font-size: 0.26rem;
+        }
+        .star{
+            width: 0.3rem;
+            height: 0.3rem;
+            background: red;
+            margin: 0 auto 0.16rem;
+        }
+        section{
+            margin-top: 0.2rem;
+            background: #ffffff;
+        }
+        .title{
+            font-size: 0.26rem;
+            color: #999999;
+            height: 0.85rem;
+            line-height: 0.85rem;
+            padding:0 0.25rem;
+            border-bottom: 1px solid #e6e6e6;
+        }
+        .userInfo{
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 0.4rem 0.25rem 0.4rem;
+            align-items:center;
+        }
+        .userInfo .img{
+            flex: 0.8rem 0 0;
+            width: 0.8rem;
+            height: 0.8rem;
+            background: red;
+            border-radius: 50%;
+            margin-right: 0.2rem;
+        }
+        .user{
+            flex:1;
+            font-size: 0.34rem;
+        }
+        .user>div:not(:last-child){
+            float: right;
+            margin-left: 0.6rem; 
+        }
+        .message,
+        .telphone{
+            width:0.33rem;
+            height: 0.34rem;
+            background: red;
+        }
+        .flag{
+            height: 0.4rem;
+            line-height: 0.4rem;
+            width: 0.95rem;
+            text-align: center;
+            font-size: 0.22rem;
+            border-radius: 0.1rem;
+            
+        }
+        .gray{
+            background: #f2f2f2;
+            color: #999999;
+        }
+        .red{
+            background: #ffecec;
+            color: #ff4343;
+        }
+        .answers{
+            margin: 0  0.25rem 0.4rem; 
+            border-bottom: 1px solid #e6e6e6;
+        }
+        .answersTime{
+            font-size: 0.22rem;
+            color: #999999;
+        }
+        .answersTime+p{
+            padding: 0 0.24rem 0.5rem 0;
+            font-size: 0.3rem;
+            line-height: 1.5;
+        }
+        .answers h4{
+            font-size: 0.3rem;
+            padding-bottom: 0.4rem;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="box">
+        <header>
+            <h3>卖房时,发生的可能法拉第你疯啦的房间辣十多年</h3>
+            <p>开发商的看你发拉速度快你疯啦独食难肥拉到你疯了</p>
+            <div class="tag">
+                <span>贷款</span>
+                <span>交易过户</span>
+            </div>
+            <div class="description">
+                <div class="one">
+                    <div style="margin-bottom:0.16rem">只如初见</div>
+                    <div>发布于: 2018-02-06</div>
+                </div>
+                <div class="two" v-if="true">
+                    <div class="star"></div>
+                    <div>取消关注</div> 
+                </div>
+                <div class="two" v-if="false">
+                    <div class="star"></div>
+                    <div>关注</div>
+                </div>
+            </div>
+        </header>
+        <section>
+            <div class="title">共2个回答</div>
+            <ul>
+                <li v-for="item in 2">
+                    <div class="userInfo">
+                        <div class="img"><img src="" alt=""></div>
+                        <div class="user">
+                            <div class="message"></div>
+                            <div class="telphone"></div>
+                            <div class="flag gray" v-if="true">待采纳</div>
+                            <div class="flag red" v-else>已采纳</div>
+                            <div class="name">张三</div>
+                        </div>
+                    </div>
+                    <div class="answers">
+                        <div class="answersTime">2018-02-28</div>
+                        <p>内容1内容1内容1内容1内容1内容1内容1内容1</p>
+                        <h4>内容2</h4>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <script src="../js/response.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/axiosurl.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <script>
+        var vm = new Vue({
+                el: '#box',
+                data: {
+
+                }
+            })
+    </script>
+</body>
+</html>

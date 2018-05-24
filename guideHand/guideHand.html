@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>购房指南</title>
     <link rel="stylesheet" href="../css/reset.css">
@@ -17,7 +17,7 @@
             <ul class="menu">
                 <li v-for="(item,index) in menudata" 
                     :class="selectNum==index?'bgColor':''"
-                    @click="selectItem(index)">{{item}}</li>
+                    @click="selectItem(index)">{{item.name}}</li>
             </ul>
         </nav>
         <section>
@@ -49,7 +49,8 @@
                 pdlist2: [],
                 selectNum: 0,
                 urlparams: null,
-                page: 1
+                page: 1,
+                city: 'beihai'
             },
             mounted(){
 				//解析: 下拉回调默认调用mescroll.resetUpScroll(); 而resetUpScroll会将page.num=1,再执行up.callback,从而实现刷新列表数据为第一页;
@@ -84,7 +85,7 @@
 			        if(day==0){
 		          	  time = hours + '小时' + minute + '分前';
 			      	}else{
-			          time = day + '天前' + hours + '小时' + minute + '分' + second + '秒';
+			          time = day + '天' + hours + '小时前';
 			        }
 			      	return time
             	}
@@ -96,16 +97,24 @@
                     this.pdlist = this.pdlist2[index];    
                     this.upCallback();                
                 },
+                titleDataRequest() {
+                    axios.get(GUIDEHAND,{
+                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
+                    })
+                    .then((res) => {
+                        console.log(res);
+                    })
+                },
                 detialh5page(index) {
                     var url = this.pdlist.infoContentList[index].contentUrl;
                     var params = this.parseUrl(url);
                     location.href="../detailpage/guideDetail.html?id="+params.id;
                 },
 				upCallback() {
-                    let city = 'beihai';
+                    let city = this.city;
                     let page = this.page++;
-                    console.log(page)
-                    this.guideDataRequest(1);
+                    let index = this.selectNum;
+                    this.guideDataRequest(page, city, index);
 					// 	//更新列表数据
 					// 	self.pdlist = self.pdlist.concat(curPageData);
 					// 	//方法一(推荐): 后台接口有返回列表的总页数 totalPage
@@ -120,13 +129,14 @@
 					// 	//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
 					// 	self.mescroll.endSuccess(curPageData.length);
                 },
-                guideDataRequest(page, city) {
+                guideDataRequest(page, city, selectNum) {
                     axios.get(GUIDEHAND,{
                         headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
                     })
                     .then((res) => {
                         var arr = res.data.data;
-                        this.pdlist = arr[0];
+                        this.menudata = arr;
+                        this.pdlist = arr[selectNum];
                         this.pdlist2 = arr;
                         this.mescroll.endErr();
                     })
