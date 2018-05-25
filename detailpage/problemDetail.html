@@ -178,14 +178,14 @@
         <section>
             <div class="title">共{{dataDetail.answerNum}}个回答</div>
             <ul>
-                <li v-for="item in 2">
+                <li v-for="(item,index) in 2">
                     <div class="userInfo">
-                        <div class="img"><img src="" alt=""></div>
+                        <div class="img"><img :src="item.photo"></div>
                         <div class="user">
                             <div class="message"><a href="sms:15857009524"><img src="imgs/duanxin.png"></a></div>
                             <div class="telphone"><a href="tel:15857009524"><img src="imgs/phone.png"></a></div>
-                            <div class="flag gray" v-if="agree" @click="toggleAgree()">待采纳</div>
-                            <div class="flag red" v-else  @click="toggleAgree()">已采纳</div>
+                            <div class="flag gray" v-if=" agreeIndex == index? false : true " @click="toggleAgree(index)">待采纳</div>
+                            <div class="flag red" v-else  @click="toggleAgree(index)">已采纳</div>
                             <div class="name">{{dataDetail.consultantName}}</div>
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                     employeeId: '',
                     token: '',
                     addLike: true,
-                    agree: true
+                    agreeIndex: null
                 },
                 created() {
                     var url = location.href;
@@ -240,8 +240,8 @@
                     togglelike() {
                         this.addLike = !this.addLike;
                     },
-                    toggleAgree() {
-                        this.agree = !this.agree;
+                    toggleAgree(index) {
+                        this.agreeIndex = index;
                     },
                     answersDetialRequest(id,city,token) {
                         axios.get(CONSULTANTINFO+"?employeeId="+id,{
