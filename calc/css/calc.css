@@ -68,7 +68,7 @@ li img{
     line-height: 0.9rem;
     text-align: center;
     width: 6rem;
-    margin: 1rem auto 0;
+    margin: 1rem auto 2rem;
     border: 0;
     background: #ff4343;
     color: #ffffff;
@@ -171,4 +171,16 @@ li img{
 }
 .bgColor2{
     color: #ff4343;
+}
+/* 提示内容 */
+.toast{
+    background:#222;
+    color: #c1c1c1;
+    font-size: 0.2rem;
+    padding: 0.2rem 0.3rem;
+    position: fixed;
+    bottom: 0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 1rem;
 }

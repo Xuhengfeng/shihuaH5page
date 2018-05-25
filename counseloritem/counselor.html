@@ -75,14 +75,14 @@
                     // id 列表id
                     // scityname 城市拼音
                     // token 尽量都传过来
-                    var url = 'xxxxxxx?id=434&scityname=beihai&token=d2ViX2MxMTE0YzVhLWYwOGEtNDg0OS1iZWM1LTMzZThlOTBmYWM3Ml8w';
+                    // var url = 'xxxxxxx?id=434&scityname=beihai&token=d2ViX2MxMTE0YzVhLWYwOGEtNDg0OS1iZWM1LTMzZThlOTBmYWM3Ml8w';
                     var urlparams = this.parseUrl(url);
                     console.log(urlparams);
 
                     this.urlparams = urlparams;
                     this.city = urlparams.scityname;
                     this.employeeId = this.urlparams.id;
-                    this.token = this.urlparams.token;
+                    this.token = this.urlparams.token||null;
                     this.answerRequest(this.employeeId, this.city);
                 },
                 methods: {

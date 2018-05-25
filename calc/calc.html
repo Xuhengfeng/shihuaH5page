@@ -27,7 +27,7 @@
             
             <ul v-if="isLoans"><!-- 按贷款总额 -->
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">贷款总额<input v-model="loans"/><span>万</span></li>
+                <li class="price">贷款总额<input v-model="loans" type="number"/><span>万</span></li>
                 <li @click="unfold(1)">贷款年限<input v-model="years" readonly/><img src="imgs/arrows.png"/></li>
                 <li @click="selectItem(3)">贷款利率<input v-model="rate11" readonly/><img src="imgs/arrows.png"/></li>
             </ul>
@@ -128,6 +128,7 @@
                 </div>
             </transition>
         </footer>
+        <div class="toast" v-if="isToast">{{toastContent}}</div>
     </div>
     <script>
         var vm = new Vue({
@@ -143,9 +144,12 @@
                 rate21: "最新基准利率(4.9%)",//商业贷款利率
                 rate31: "最新基准利率(3.25%)",//组合贷款的公积金贷款利率
                 rate32: "最新基准利率(4.9%)",//组合贷款的商业贷款利率
+                calcRate: 4.9, //用于计算的贷款利率
+                calcYears: 30, //用于计算的贷款年数
                 commercialLoans: 0,//组合贷款的商业贷款
                 houseLoans: 0,//组合贷款的公积金贷款
-
+                isToast: false,//是否提示
+                toastContent: "请输入贷款金额",//提示内容
                 rate: "7成",//公积金 商业 组合的贷款比例
    
                 sellPrice: 0,//房价总额
@@ -230,6 +234,28 @@
                             break;
                         case 1://年限
                             this.years=item+'年';
+                            this.calcYears=item;
+                            if(item<=5){
+                                this.rate11="最新基准利率(2.75%)";
+                                this.rate21="最新基准率(4.75%)";
+                                this.rate31="最新基准利率(2.75%)";
+                                this.rate32="最新基准率(4.75%)";
+                                if(this.selectNum==0){
+                                    this.calcRate=2.75;
+                                }else if(this.selectNum==1){
+                                    this.calcRate=4.75;                                    
+                                }
+                            }else{
+                                this.rate11="最新基准利率(3.25%)";
+                                this.rate21="最新基准率(4.9%)";
+                                this.rate31="最新基准利率(3.25%)";
+                                this.rate32="最新基准率(4.9%)";
+                                if(this.selectNum==0){
+                                    this.calcRate=3.25;
+                                }else if(this.selectNum==1){
+                                    this.calcRate=4.9;
+                                }
+                            }
                             break;
                         case 2://利率
                             if(this.selectNum==0){
@@ -252,6 +278,7 @@
                     let num = item.slice(0,-1)-0;
                     let resultRate = num * 3.25;
                     resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+                    this.calcRate = resultRate;
 
                     index==0
                     ?(this.rate11 = "最新基准利率(3.25%)",this.rate31 = "最新基准利率(3.25%)")
@@ -269,7 +296,8 @@
                         resultRate = num * 4.9;                                   
                     }
                     resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
-
+                    this.calcRate = resultRate;
+                    
                     index==0
                     ?(this.rate21 = "最新基准利率(4.9%)",this.rate32 = "最新基准利率(4.9%)")
                     :(this.rate21 = "最新基准利率"+item+"("+resultRate+"%)",this.rate32 = "最新基准利率"+item+"("+resultRate+"%)");
@@ -278,7 +306,10 @@
                 calcResult() {
                     //这里调取真正的计算
                     let result = {};
-                    location.href='./calcChart.html?result='+result;
+                    //location.href='./calcChart.html?result='+result;
+                    if(this.isLoans){//按贷款总额计算
+                        this.calcformula1();
+                    }
                 },
                 /**
                  * 计算公式
@@ -329,13 +360,40 @@
                  * 商业贷款月均还款 = (商业贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  * 公积金贷款月均还款 = (公积金贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  */
-                calcformula1(params) {
+                //按照贷款总额进行计算
+                calcformula1() {
+                    let result = {};//计算结果
+                    let D = parseInt(this.loans);//贷款总额
+                    let R = this.calcRate/100;//贷款利率(年利率)
+                    let r = R/12//月利率 
+                    let N = this.calcYears;//贷款年数
+                    let n = N*12;//月数
+                    let h;//每月还h万
                     
-                
-                
-                
-                
+                    //验证是否输入贷款额 
+                    if(D==0){
+                        this.isToast = true;
+                        return setTimeout(()=>{this.isToast=false},3000);
+                    }
 
+                    //年数
+                    "string" == typeof this.years
+                    ? N = this.years.slice(0,-1)-0
+                    : N = this.years;
+
+                    
+                    //月均还款
+                    // h = (D*r*(1+r)^n)/((1+r)^n-1);
+                    // let midn = (1+r)^n;
+
+                    console.log(D,r,n);
+                    let midn = Math.pow((1+r),n);
+
+                    h = (D*r*midn)/(midn-1);
+
+                    console.log(h);
+
+                    return result;
                 },
                 //计算公式(按房价总额)
                 calcformula2() {
