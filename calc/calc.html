@@ -233,27 +233,11 @@
                             break;
                         case 2://利率
                             if(this.selectNum==0){
-                                console.log(item)
-                                console.log(item.slice(0,-1))
-                                console.log(item)
-                                index==0
-                                ?this.rate11 = "最新基准利率(3.25%)"
-                                :this.rate11 = item;
+                                this.changeRate1(item,index);
                             }else if(this.selectNum==1){
-                                index==0
-                                ?this.rate21 = "最新基准利率(4.9%)"
-                                :this.rate21 = item;
+                                this.changeRate2(item,index);
                             }else if(this.selectNum==2){
-                                if(this.selectNum3==3){
-                                    index==0
-                                    ?this.rate31 = "最新基准利率(3.25%)"
-                                    :this.rate31 = item;
-                                }else{
-                                    index==0
-                                    ?this.rate32 = "最新基准利率(4.9%)"
-                                    :this.rate32 = item;
-                                }
-                                console.log(item)
+                                this.selectNum3 == 3? this.changeRate1(item,index): this.changeRate2(item,index);
                             }
                             break;
                         case 3://贷款比例
@@ -262,10 +246,37 @@
                     }
                     this.cancel();
                 },
+                //修改贷款利率 基准利率3.25%
+                changeRate1(item,index) {
+                    //修改贷款利率
+                    let num = item.slice(0,-1)-0;
+                    let resultRate = num * 3.25;
+                    resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+
+                    index==0
+                    ?(this.rate11 = "最新基准利率(3.25%)",this.rate31 = "最新基准利率(3.25%)")
+                    :(this.rate11 = "最新基准利率"+item+"("+resultRate+"%)",this.rate31 = "最新基准利率"+item+"("+resultRate+"%)");
+
+                },
+                //修改贷款利率 基准利率4.9%
+                changeRate2(item,index) {
+                    //修改贷款利率
+                    let resultRate;                         
+                    let num = item.slice(0,-1)-0;
+                    if(item.slice(-1)=='折'){
+                        resultRate = num * 4.9 / 10;
+                    }else if(item.slice(-1)=='倍'){
+                        resultRate = num * 4.9;                                   
+                    }
+                    resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+
+                    index==0
+                    ?(this.rate21 = "最新基准利率(4.9%)",this.rate32 = "最新基准利率(4.9%)")
+                    :(this.rate21 = "最新基准利率"+item+"("+resultRate+"%)",this.rate32 = "最新基准利率"+item+"("+resultRate+"%)");
+                },
                 //计算
                 calcResult() {
                     //这里调取真正的计算
-                    //Todo
                     let result = {};
                     location.href='./calcChart.html?result='+result;
                 },
