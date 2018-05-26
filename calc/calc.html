@@ -144,8 +144,9 @@
                 rate21: "最新基准利率(4.9%)",//商业贷款利率
                 rate31: "最新基准利率(3.25%)",//组合贷款的公积金贷款利率
                 rate32: "最新基准利率(4.9%)",//组合贷款的商业贷款利率
-                calcRate: 4.9, //用于计算的贷款利率
-                calcYears: 30, //用于计算的贷款年数
+                calcRate1: 3.25, //用于计算的公积金贷款利率
+                calcRate2: 4.9,  //用于计算的商业贷款利率
+                calcYears: 30,   //用于计算的贷款年数
                 commercialLoans: 0,//组合贷款的商业贷款
                 houseLoans: 0,//组合贷款的公积金贷款
                 isToast: false,//是否提示
@@ -180,14 +181,24 @@
                     this.changeLoans();
                 },
                 commercialLoans() {
-                    (this.houseLoans>this.loans||this.commercialLoans>this.loans)
-                    ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
-                    : this.changeLoans();
+                    let loans = this.loans;
+                    if(loans==0){
+                        return;
+                    }else{
+                        this.commercialLoans>loans
+                        ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
+                        : this.changeLoans();
+                    }
                 },
                 houseLoans() {
-                    (this.houseLoans>this.loans||this.commercialLoans>this.loans)
-                    ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
-                    : this.changeLoans();
+                    let loans = this.loans;
+                    if(loans==0){
+                        return;
+                    }else{
+                        this.houseLoans>loans
+                        ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
+                        : this.changeLoans();
+                    }
                 }
             },
             computed: {
@@ -209,12 +220,8 @@
                  * index 3 4 控制贷款利率 公积金利率 商贷利率
                  */
                 changeLoans() {
-                    if(this.isToast){
-                        return;
-                    }else{
-                        this.commercialLoans = this.loans - this.houseLoans;
-                        this.houseLoans = this.loans - this.commercialLoans;
-                    }
+                    this.commercialLoans = this.loans - this.houseLoans;
+                    this.houseLoans = this.loans - this.commercialLoans;
                 },
                 selectItem(index) {
                    let num;
@@ -306,15 +313,7 @@
                             break;
                         case 2://利率
                             this.three = index;
-                            if(this.selectNum==0){
-                                this.changeRate1(item,index);
-                            }else if(this.selectNum==1){
-                                this.changeRate2(item,index);
-                            }else if(this.selectNum==2){
-                                this.selectNum3 == 3
-                                ? this.changeRate1(item,index)
-                                : this.changeRate2(item,index);
-                            }
+                            this.changeRate(item,index,this.selectNum);
                             break;
                         case 3://贷款比例
                             this.four = index;
@@ -323,54 +322,78 @@
                     }
                     this.cancel();
                 },
-                //修改贷款利率 基准利率3.25%
-                changeRate1(item,index) {
-                    //修改贷款利率
+                changeRate(item,index,selectNum) {
+                    let resultRate;
                     let num = item.slice(0,-1)-0;
-                    let resultRate = num * 3.25;
-                    resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
-                    this.calcRate = resultRate;
+                    if(this.selectNum == 0){
+                        //修改贷款利率 基准利率3.25%
+                        resultRate = Math.floor( num * 3.25 * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+                        this.calcRate1 = resultRate;
 
-                    index==0
-                    ?(this.rate11 = "最新基准利率(3.25%)",this.rate31 = "最新基准利率(3.25%)")
-                    :(this.rate11 = "最新基准利率"+item+"("+resultRate+"%)",this.rate31 = "最新基准利率"+item+"("+resultRate+"%)");
+                        index==0
+                        ? this.rate11 = "最新基准利率(3.25%)"
+                        : this.rate11 = "最新基准利率"+item+"("+resultRate+"%)";
+                    }else if(this.selectNum == 1) {
+                        //修改贷款利率 基准利率4.9%
+                        if(item.slice(-1)=='折'){
+                            resultRate = num * 4.9 / 10;
+                        }else if(item.slice(-1)=='倍'){
+                            resultRate = num * 4.9;                                   
+                        }
+                        resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+                        this.calcRate2 = resultRate;
+                        
+                        index==0
+                        ? this.rate21 = "最新基准利率(4.9%)"
+                        : this.rate21 = "最新基准利率"+item+"("+resultRate+"%)";
+                    }else if(this.selectNum == 2){
+                        if( this.selectNum3 == 3) {
+                            //修改贷款利率 基准利率3.25%
+                            resultRate = Math.floor(num * 3.25 * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+                            this.calcRate1 = resultRate;
 
-                },
-                //修改贷款利率 基准利率4.9%
-                changeRate2(item,index) {
-                    //修改贷款利率
-                    let resultRate;                         
-                    let num = item.slice(0,-1)-0;
-                    if(item.slice(-1)=='折'){
-                        resultRate = num * 4.9 / 10;
-                    }else if(item.slice(-1)=='倍'){
-                        resultRate = num * 4.9;                                   
+                            index==0
+                            ? this.rate31 = "最新基准利率(3.25%)"
+                            : this.rate31 = "最新基准利率"+item+"("+resultRate+"%)";
+                        }else{
+                            //修改贷款利率 基准利率4.9%
+                            if(item.slice(-1)=='折'){
+                                resultRate = num * 4.9 / 10;
+                            }else if(item.slice(-1)=='倍'){
+                                resultRate = num * 4.9;                                   
+                            }
+                            resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
+                            this.calcRate2 = resultRate;
+                            
+                            index==0
+                            ? this.rate32 = "最新基准利率(4.9%)"
+                            : this.rate32 = "最新基准利率"+item+"("+resultRate+"%)";
+                        }
                     }
-                    resultRate = Math.floor(resultRate * 100) / 100//不四舍五入 截取小数点后两位 思想是先扩大100倍取整，再缩小100倍
-                    this.calcRate = resultRate;
-                    
-                    index==0
-                    ?(this.rate21 = "最新基准利率(4.9%)",this.rate32 = "最新基准利率(4.9%)")
-                    :(this.rate21 = "最新基准利率"+item+"("+resultRate+"%)",this.rate32 = "最新基准利率"+item+"("+resultRate+"%)");
                 },
                 //计算
                 calcResult() {
-                    //这里调取真正的计算
-                    let result = {};
-                    //location.href='./calcChart.html?result='+result;
-                    if(this.isLoans){//按贷款总额计算
-                        this.calcformula1();
+                    //验证是否输入贷款额 
+                    if(this.loans==0){
+                        this.isToast = true;
+                        return setTimeout(()=>{this.isToast=false},3000);
                     }
+
+                    //这里调取真正的计算
+                    let result; 
+                    if(this.selectNum == 0){//公积金贷款按贷款总额计算
+                        if(this.isLoans) result = this.calcformula1(0);
+                    }else if(this.selectNum == 1){//商业贷款按贷款总额计算
+                        if(this.isLoans) result = this.calcformula1(1);
+                    
+                    }else{//组合贷款按贷款总额计算
+                        if(this.isLoans) result = this.groupCalc();
+                    }
+
+                    //if(this.loans!=0) location.href="./calcChart.html?one="+JSON.stringify(result.one)+"&two="+JSON.stringify(result.two);
                 },
                 /**
                  * 计算公式
-                 * 等额本息计算公式
-                 * 每月还款额 = (本金*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1);
-                 * 每月还利息 = 剩余本金*贷款月利率   注:第一个月的剩余本金就是贷款本金
-                 * 还款总利息 = 贷款本金*贷款月数*月利率*(1+月利率)^还款月数 / [(1+月利率)^还款月数-1]-贷款本金
-                 * 计算原则: 银行从每月月供款中,先收取剩余本金的利息,后收取本金;利息在月供比例中
-                 *          随剩余本金的减少而降低,本金在月供款中的比例变高,但是月供总额不变。
-                 * 
                  * 等额本金计算公式
                  * 每月还款额 = 每月本金 + 每月利息
                  * 每月本金 = 本金/还款月数
@@ -378,6 +401,13 @@
                  * 每月月供递减额 = 贷款本金/还款月数*月利率
                  * 总利息 = [(贷款本金/还款月数+贷款本金*月利率)+贷款本金/还款月数*(1+月利率)]/2*还款月数-贷款本金
                  * 计算原则: 每月归还的本金额始终不变,利息随剩余本金的减少减少。
+                 *
+                 * 等额本息计算公式
+                 * 每月还款额 = (本金*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1);
+                 * 每月还利息 = 剩余本金*贷款月利率   注:第一个月的剩余本金就是贷款本金
+                 * 还款总利息 = 贷款本金*贷款月数*月利率*(1+月利率)^还款月数 / [(1+月利率)^还款月数-1]-贷款本金
+                 * 计算原则: 银行从每月月供款中,先收取剩余本金的利息,后收取本金;利息在月供比例中
+                 *          随剩余本金的减少而降低,本金在月供款中的比例变高,但是月供总额不变。
                  * 
                  * 房屋价格的贷款额度计算
                  * 房屋总价 = 单价*面积
@@ -396,39 +426,34 @@
                  * 商业贷款月均还款 = (商业贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  * 公积金贷款月均还款 = (公积金贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  */
-                //按照贷款总额进行计算
-                calcformula1() {
+                //公积金和商业贷款
+                calcformula1(num) {
+                    //按照贷款总额进行计算
+                    let rate = num == 0 ? this.calcRate1 : this.calcRate2;
                     let D = (this.loans-0)*10000;    //贷款总额多少元
-                    let R = this.calcRate/100;       //贷款利率(年利率)
+                    let R = rate/100;                //贷款利率(年利率)
                     let r = R/12;                    //月利率 
                     let years = this.calcYears;      //贷款年数
                     let month = years*12;            //月数
-                    let result = [
-                        {                                //等额本息
-                            "totalLoans": D,             //贷款总额多少元
-                            "totalLoans2": D/10000,      //贷款总额多少万
-                            "month": month,              //月数
-                            "rnb": null,                 //每月还款多少元
-                            "totalRnb": null,            //总共还多少元
-                            "totalInterest": null,       //总共支付多少万利息
-                            "totalInterest2": null,      //总共支付多少元利息
-                        },
-                        {                                //等额本金
-                            "totalLoans": D,             //贷款总额多少元
-                            "totalLoans2": D/10000,      //贷款总额多少万                            
-                            "month": month,              //月数
-                            "rnb": null,                 //每月还款多少元
-                            "totalRnb": null,            //总共还多少元
-                            "totalInterest": null,       //总共支付多少万利息
-                            "totalInterest2": null,      //总共支付多少元利息
-                            "Decreasing": null,          //每月递减额
-                        }
-                    ];
 
-                    //验证是否输入贷款额 
-                    if(D==0){
-                        this.isToast = true;
-                        return setTimeout(()=>{this.isToast=false},3000);
+                    let result1 = {                //等额本金
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
+                        Decreasing: null,          //每月递减多少元
+                    }
+                    let result2 = {                //等额本息
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
                     }
 
                     //年数
@@ -436,25 +461,91 @@
                     ? years = this.years.slice(0,-1)-0
                     : years = this.years;
 
+                    //等额本金总利息
+                    let totalInterest = [(D/month+D*r)+D/month*(1+r)]/2*month-D;
+                    result1.totalInterest = Math.floor(totalInterest/10000*10)/10;
+                    result1.totalInterest2 = Math.floor(totalInterest);
+                    result1.totalRnb = result1.totalInterest + result1.totalLoans2;
+                    result1.rnb = Math.floor((D - result1.totalRnb)*r + D/month);
+                    result1.Decreasing = Math.floor((D/month*r));
+
                     //等额本息月均还款
                     let midn = Math.pow((1+r), month);
                     let rnb = (D*r*midn)/(midn-1);
-                    result[0]["rnb"] = Math.floor(rnb);
-                    result[0]["totalInterest"] = Math.floor((rnb*month-D)/10000*10)/10;
-                    result[0]["totalInterest2"] = Math.floor(rnb*month-D);
-                    result[0]["totalRnb"] = result[0]["totalInterest"] + result[0]["totalLoans2"];
+                    result2.rnb = Math.floor(rnb);
+                    result2.totalInterest = Math.floor((rnb*month-D)/10000*10)/10;
+                    result2.totalInterest2 = Math.floor((rnb*month-D)*10)/10;
+                    result2.totalRnb = result2.totalInterest + result2.totalLoans2;
+                    return {
+                        one: result1,
+                        two: result2
+                    };
+                },
+                //组合贷款计算
+                groupCalc() {
+                    let D1 = this.houseLoans*10000;        //公积金贷款
+                    let D2 = this.commercialLoans*10000;   //商业贷款
+                    let D = D1 + D2;
+                    let R1 = this.calcRate1/100;     //公积金贷款利率
+                    let R2 = this.calcRate2/100;     //商业贷款利率
+                    let r1 = R1/12;                  //公积金贷款月利率
+                    let r2 = R2/12;                  //商业贷款月利率
+                    let years = this.calcYears;      //贷款年数
+                    let month = years*12;            //月数
+
+                    let result1 = {                //等额本金
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
+                    }
+                    let result2 = {                //等额本息
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
+                    }
+
+                    //年数
+                    "string" == typeof this.years
+                    ? years = this.years.slice(0,-1)-0
+                    : years = this.years;
+
+                    //等额本金
+                    let r = (R1+R2)/12;
+                    let totalInterest = [(D1/month+D1*r1)+D1/month*(1+r1)]/2*month-D1;
+                    let totalInterest2 = [(D2/month+D*r2)+D2/month*(1+r2)]/2*month-D2;
+                    console.log(totalInterest)
+                    console.log(totalInterest2)
+                    console.log(totalInterest2+totalInterest)
+                    // result1.totalInterest = Math.floor(totalInterest/10000*10)/10;
+                    // result1.totalInterest2 = Math.floor(totalInterest);
+                    // result1.totalRnb = result1.totalInterest + result1.totalLoans2;
+                    // result1.rnb = Math.floor((D - result1.totalRnb)*r + D/month);
+                    // result1.Decreasing = Math.floor((D/month*r));
 
 
-                    //等额本金总利息
-                    let totalInterest = [(D/month+D*r)+D/month*(1+r)]/2*month-D;
-                    result[1]["totalInterest"] = Math.floor(totalInterest/10000*10)/10;
-                    result[1]["totalInterest2"] = Math.floor(totalInterest);
-                    result[1]["totalRnb"] = result[1]["totalInterest"] + result[1]["totalLoans2"];
-                    result[1]["rnb"] = Math.floor((D - result[1]["totalRnb"])*r + D/month);
-                    result[1]["Decreasing"] = Math.floor((D/month*r));
+                    //等额本息月均还款 = 商业贷款月均还款 + 公积金贷款月均还款
+                    let midn1 = Math.pow((1+r1), month);
+                    let midn2 = Math.pow((1+r2), month);
+                    let rnb = (D1*r1*midn1)/(midn1-1) + (D2*r2*midn2)/(midn2-1);
+                    result2.rnb = Math.floor(rnb);
+                    result2.totalInterest = Math.floor((rnb*month-D)/10000*10)/10;
+                    result2.totalInterest2 = Math.floor((rnb*month-D)*10)/10;
+                    result2.totalRnb = result2.totalInterest + result2.totalLoans2;
                     
-                    console.table(result)
-                    return result;
+                    console.table(result1)
+
+                    return {
+                        one: result1,
+                        two: result2
+                    };
                 },
                 //按房价总额进行计算
                 calcformula2() {
