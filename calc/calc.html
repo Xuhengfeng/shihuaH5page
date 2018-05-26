@@ -51,16 +51,16 @@
             
             <ul v-if="isLoans"><!-- 按贷款总额 -->
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">贷款总额<input v-model="loans"/><span>万</span></li>
+                <li class="price">贷款总额<input v-model="loans" type="number"><span>万</span></li>
                 <li @click="unfold(1)">贷款年限<input v-model="years" readonly/><img src="imgs/arrows.png"/></li>
                 <li @click="selectItem(4)">贷款利率<input v-model="rate21" readonly/><img src="imgs/arrows.png"/></li>
             </ul>
            
             <ul v-else><!-- 按房价总额 -->
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">房价总额<input v-model="sellPrice"/><span>万</span></li>
+                <li class="price">房价总额<input v-model="sellPrice" type="number"/><span>万</span></li>
                 <li @click="unfold(3)">贷款比例<input v-model="rate" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">贷款总额<input v-model="loans"/><span>万</span></li>
+                <li class="price">贷款总额<input v-model="loans" type="number"/><span>万</span></li>
                 <li @click="unfold(1)">贷款年限<input v-model="years" readonly/><img src="imgs/arrows.png"/></li>
                 <li @click="selectItem(4)">贷款利率<input v-model="rate21" readonly/><img src="imgs/arrows.png"/></li>
             </ul>
@@ -74,22 +74,22 @@
         <section v-if="selectNum == 2">
             <ul v-if="isLoans"><!-- 按贷款总额 -->
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">贷款总额<input v-model="loans"/><span>万</span></li>
-                <li class="price">公积金贷款<input v-model="houseLoans"/><span>万</span></li>
+                <li class="price">贷款总额<input v-model="loans" type="number"/><span>万</span></li>
+                <li class="price">公积金贷款<input v-model="houseLoans" type="number"/><span>万</span></li>
                 <li @click="selectItem(3)">公积金利率<input v-model="rate31" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">商业贷款<input v-model="commercialLoans"/><span>万</span></li>
+                <li class="price">商业贷款<input v-model="commercialLoans" type="number"/><span>万</span></li>
                 <li @click="selectItem(4)">商贷利率<input v-model="rate32" readonly/><img src="imgs/arrows.png"/></li>
                 <li @click="unfold(1)">贷款年限<input v-model="years" readonly/><img src="imgs/arrows.png"/></li>
             </ul>
 
             <ul v-else><!-- 按房价总额 -->
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">房价总额<input v-model="loans"/><span>万</span></li>
+                <li class="price">房价总额<input v-model="loans" type="number"/><span>万</span></li>
                 <li @click="unfold(3)">贷款比例<input v-model="rate" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">贷款总额<input v-model="loans"/><span>万</span></li>
-                <li class="price">公积金贷款<input v-model="houseLoans"/><span>万</span></li>
+                <li class="price">贷款总额<input v-model="loans" type="number"/><span>万</span></li>
+                <li class="price">公积金贷款<input v-model="houseLoans" type="number"/><span>万</span></li>
                 <li @click="selectItem(3)">公积金利率<input v-model="rate31" readonly/><img src="imgs/arrows.png"/></li>
-                <li class="price">商业贷款<input v-model="commercialLoans"/><span>万</span></li>
+                <li class="price">商业贷款<input v-model="commercialLoans" type="number"/><span>万</span></li>
                 <li @click="selectItem(4)">商贷利率<input v-model="rate32" readonly/><img src="imgs/arrows.png"/></li>
                 <li @click="unfold(1)">贷款年限<input v-model="years" readonly/><img src="imgs/arrows.png"/></li>
             </ul>
@@ -155,8 +155,12 @@
                 sellPrice: 0,//房价总额
 
                 selectNum: 0,//tab切换的索引
-                selectNum2: null,//展开选项的索引
                 selectNum3: 3,//用于区分组合贷款中的3公积金贷款比例 4商业贷款比例
+                one: null,
+                two: null,
+                three: null,
+                four: null,
+
                 isCancel: false,//打开展开选项
                 ergodic : null,//展开项将要的遍历对象
                 
@@ -184,6 +188,18 @@
                     (this.houseLoans>this.loans||this.commercialLoans>this.loans)
                     ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
                     : this.changeLoans();
+                }
+            },
+            computed: {
+                //修正高亮样式
+                selectNum2() {
+                    let num = this.titleIndex;
+                    switch(num) {
+                        case 0: return this.one;break;
+                        case 1: return this.two;break;
+                        case 2: return this.three;break;
+                        case 3: return this.four;break;
+                    }
                 }
             },
             methods:{
@@ -229,26 +245,26 @@
                             break;
                         case 1: 
                             this.titleIndex = 1;
-                            this.ergodic  = this.loanYears;//贷款年限
+                            this.ergodic  = this.loanYears;//贷款年限                     
                             break;
                         case 2: 
                             this.titleIndex = 2;
-                            this.ergodic  = this.loanRate;//贷款利率
+                            this.ergodic  = this.loanRate;//贷款利率                                                       
                             break;
                         case 3:
                             this.titleIndex = 3;
-                            this.ergodic  = this.loanRate2;//贷款比例
+                            this.ergodic  = this.loanRate2;//贷款比例                                                     
                             break;
                     }
                 },
                 // 展开项点击
                 selectOption(item,index) {
-                    this.selectNum2 = index;
                     //修改input的值
                     let num = this.titleIndex;
                     switch(num){
                         case 0://计算方式
-                            this.mode=item;
+                            this.mode = item;
+                            this.one = index;
                             if(item=="按房价总额"){
                                 this.isLoans=false;
                             }else if(item == "按贷款总额") {
@@ -258,7 +274,8 @@
                         case 1://年限
                             this.years=item+'年';
                             this.calcYears=item;
-                            if(item<=5){
+                            this.two = index;
+                            if(item<=5&&item>1){
                                 this.rate11="最新基准利率(2.75%)";
                                 this.rate21="最新基准率(4.75%)";
                                 this.rate31="最新基准利率(2.75%)";
@@ -268,7 +285,14 @@
                                 }else if(this.selectNum==1){
                                     this.calcRate=4.75;                                    
                                 }
-                            }else{
+                            }
+                            else if(item == 1) {
+                                this.rate11="最新基准利率(2.75%)";
+                                this.rate21="最新基准率(4.35%)";
+                                this.rate31="最新基准利率(2.75%)";
+                                this.rate32="最新基准率(4.35%)";
+                            }
+                            else{
                                 this.rate11="最新基准利率(3.25%)";
                                 this.rate21="最新基准率(4.9%)";
                                 this.rate31="最新基准利率(3.25%)";
@@ -281,6 +305,7 @@
                             }
                             break;
                         case 2://利率
+                            this.three = index;
                             if(this.selectNum==0){
                                 this.changeRate1(item,index);
                             }else if(this.selectNum==1){
@@ -292,6 +317,7 @@
                             }
                             break;
                         case 3://贷款比例
+                            this.four = index;
                             this.rate=item+'成';
                             break;
                     }
