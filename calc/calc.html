@@ -382,15 +382,27 @@
                     //这里调取真正的计算
                     let result; 
                     if(this.selectNum == 0){//公积金贷款按贷款总额计算
-                        if(this.isLoans) result = this.calcformula1(0);
+                        if(this.isLoans) {
+                            result = this.calcformula1(0);
+                        }else{
+                            result = this.calcformula2(0);
+                        }
                     }else if(this.selectNum == 1){//商业贷款按贷款总额计算
-                        if(this.isLoans) result = this.calcformula1(1);
+                        if(this.isLoans) {
+                            result = this.calcformula1(1);
+                        }else{
+                            result = this.calcformula2(1);
+                        }
                     
                     }else{//组合贷款按贷款总额计算
-                        if(this.isLoans) result = this.groupCalc();
+                        if(this.isLoans){
+                            result = this.groupCalc();
+                        }else{
+                            result = this.groupCalc();
+                        }
                     }
 
-                    if(this.loans!=0) location.href="./calcChart.html?one="+JSON.stringify(result.one)+"&two="+JSON.stringify(result.two);
+                    //if(this.loans!=0) location.href="./calcChart.html?one="+JSON.stringify(result.one)+"&two="+JSON.stringify(result.two);
                 },
                 /**
                  * 计算公式
@@ -535,8 +547,6 @@
                     result2.totalInterest = Math.floor((rnb*month-D)/10000*10)/10;
                     result2.totalInterest2 = Math.floor((rnb*month-D)*10)/10;
                     result2.totalRnb = result2.totalInterest + result2.totalLoans2;
-                    
-                    console.table(result1)
 
                     return {
                         one: result1,
@@ -544,8 +554,61 @@
                     };
                 },
                 //按房价总额进行计算
-                calcformula2() {
-                    
+                calcformula2(num) {
+                    console.log('点击')
+                    //按照房价总额进行计算
+                    let rate = num == 0 ? this.calcRate1 : this.calcRate2;
+                    let housesell = this.sellPrice;  //房价总额
+                    let D = (this.loans-0)*10000;    //贷款总额多少元
+                    let R = rate/100;                //贷款利率(年利率)
+                    let r = R/12;                    //月利率 
+                    let years = this.calcYears;      //贷款年数
+                    let month = years*12;            //月数
+
+                    let result1 = {                //等额本金
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
+                        Decreasing: null,          //每月递减多少元
+                    }
+                    let result2 = {                //等额本息
+                        totalLoans: D,             //贷款总额多少元
+                        totalLoans2: D/10000,      //贷款总额多少万
+                        month: month,              //月数
+                        rnb: null,                 //每月还款多少元
+                        totalRnb: null,            //总共还多少元
+                        totalInterest: null,       //总共支付多少万利息
+                        totalInterest2: null,      //总共支付多少元利息
+                    }
+
+                    //年数
+                    "string" == typeof this.years
+                    ? years = this.years.slice(0,-1)-0
+                    : years = this.years;
+
+                    //等额本金总利息
+                    let totalInterest = [(D/month+D*r)+D/month*(1+r)]/2*month-D;
+                    result1.totalInterest = Math.floor(totalInterest/10000*10)/10;
+                    result1.totalInterest2 = Math.floor(totalInterest);
+                    result1.totalRnb = result1.totalInterest + result1.totalLoans2;
+                    result1.rnb = Math.floor((D - result1.totalRnb)*r + D/month);
+                    result1.Decreasing = Math.floor((D/month*r));
+
+                    //等额本息月均还款
+                    let midn = Math.pow((1+r), month);
+                    let rnb = (D*r*midn)/(midn-1);
+                    result2.rnb = Math.floor(rnb);
+                    result2.totalInterest = Math.floor((rnb*month-D)/10000*10)/10;
+                    result2.totalInterest2 = Math.floor((rnb*month-D)*10)/10;
+                    result2.totalRnb = result2.totalInterest + result2.totalLoans2;
+                    return {
+                        one: result1,
+                        two: result2
+                    };
                 }
             }
         }) 
