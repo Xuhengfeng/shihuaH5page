@@ -178,26 +178,26 @@
             },
             watch: {
                 loans() {
-                    this.changeLoans();
+                    this.commercialLoans = this.loans - 0;
                 },
                 commercialLoans() {
-                    let loans = this.loans;
-                    if(loans==0){
+                    if(this.commercialLoans<0) this.commercialLoans=0;
+                    if(this.loans==0){
                         return;
                     }else{
-                        this.commercialLoans>loans
+                        this.commercialLoans>this.loans
                         ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
-                        : this.changeLoans();
+                        : this.houseLoans = this.loans - this.commercialLoans;
                     }
                 },
                 houseLoans() {
-                    let loans = this.loans;
-                    if(loans==0){
+                    if(this.houseLoans<0) this.houseLoans=0;
+                    if(this.loans==0){
                         return;
                     }else{
-                        this.houseLoans>loans
+                        this.houseLoans>this.loans
                         ? (this.isToast=true,this.toastContent="超出贷款总额",setTimeout(()=>{this.isToast=false},3000))
-                        : this.changeLoans();
+                        : this.commercialLoans = this.loans - this.houseLoans;
                     }
                 }
             },
@@ -390,12 +390,12 @@
                         if(this.isLoans) result = this.groupCalc();
                     }
 
-                    //if(this.loans!=0) location.href="./calcChart.html?one="+JSON.stringify(result.one)+"&two="+JSON.stringify(result.two);
+                    if(this.loans!=0) location.href="./calcChart.html?one="+JSON.stringify(result.one)+"&two="+JSON.stringify(result.two);
                 },
                 /**
                  * 计算公式
                  * 等额本金计算公式
-                 * 每月还款额 = 每月本金 + 每月利息
+                 * 每月还款额 = 本金/还款月数 + (本金-累计还款总额)*月利率
                  * 每月本金 = 本金/还款月数
                  * 每月利息 = (本金-累计还款总额)*月利率
                  * 每月月供递减额 = 贷款本金/还款月数*月利率
@@ -419,12 +419,12 @@
                  * 月均还款 = (贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  * 
                  * 组合型计算
+                 * 商业贷款月均还款 = (商业贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
+                 * 公积金贷款月均还款 = (公积金贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
+                 * 月均还款 = 商业贷款月均还款 + 公积金贷款月均还款
                  * 贷款金额 = 商业贷款金额+公积金贷款金额
                  * 月利率 = 年利率*倍数/12 或者 年利率*折扣数/12
                  * 支付利息 = 月均还款*还款月数 - 贷款金额
-                 * 月均还款 = 商业贷款月均还款 + 公积金贷款月均还款
-                 * 商业贷款月均还款 = (商业贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
-                 * 公积金贷款月均还款 = (公积金贷款金额*月利率*(1+月利率)^还款月数)/((1+月利率)^还款月数-1)
                  */
                 //公积金和商业贷款
                 calcformula1(num) {
@@ -519,16 +519,12 @@
 
                     //等额本金
                     let r = (R1+R2)/12;
-                    let totalInterest = [(D1/month+D1*r1)+D1/month*(1+r1)]/2*month-D1;
-                    let totalInterest2 = [(D2/month+D*r2)+D2/month*(1+r2)]/2*month-D2;
-                    console.log(totalInterest)
-                    console.log(totalInterest2)
-                    console.log(totalInterest2+totalInterest)
-                    // result1.totalInterest = Math.floor(totalInterest/10000*10)/10;
-                    // result1.totalInterest2 = Math.floor(totalInterest);
-                    // result1.totalRnb = result1.totalInterest + result1.totalLoans2;
-                    // result1.rnb = Math.floor((D - result1.totalRnb)*r + D/month);
-                    // result1.Decreasing = Math.floor((D/month*r));
+                    let totalInterest = [(D1/month+D1*r1)+D1/month*(1+r1)]/2*month-D1 + [(D2/month+D2*r2)+D2/month*(1+r2)]/2*month-D2
+                    result1.totalInterest = Math.floor(totalInterest/10000*10)/10;
+                    result1.totalInterest2 = Math.floor(totalInterest);
+                    result1.totalRnb = result1.totalInterest + result1.totalLoans2;
+                    result1.rnb = Math.floor((D1 - result1.totalRnb)*r1 + D1/month+ (D2 - result1.totalRnb)*r2 + D2/month);
+                    result1.Decreasing = Math.floor(D1/month*r1+D2/month*r2);
 
 
                     //等额本息月均还款 = 商业贷款月均还款 + 公积金贷款月均还款
