@@ -57,62 +57,54 @@
             },
             watch: {
                 data() {
-                        
-                // 初始化echarts实例  
-                var myChart = this.$refs.chartcxt; 
-                //自适应宽高
-                var myChartContainer = function () {
-                    myChart.style.width = 17+'rem';
-                    // myChart.style.width = 50%;
+                    // 初始化echarts实例  
+                    var myChart = this.$refs.chartcxt; 
+                    //自适应宽高
+                    var myChartContainer = function () {
+                        myChart.style.width = 17+'rem';
+                        // myChart.style.width = 50%;
 
-                    // myChart.style.height = 17+'rem';
-                    myChart.style.height = 22+'rem';
-                };
-                myChartContainer();
-                var myChart = echarts.init(myChart);  
-                
-                // 指定图表的配置项和数据  
-                option = {
-                    //设置图表与容器的间隔
-                    grid:{
-                        x:0,
-                        y:0,
-                        x2:0,
-                        y2:0,
-                        borderWidth:1
-                    },
-                    color: ['green','white','red','white'],
-                    series: [
-                        {
-                            type:'pie',
-                            radius: ['50%', '70%'],
-                            avoidLabelOverlap: false,
-                            label: {
-                                normal: {
-                                    show: false,
-                                    position: 'center'
-                                },
-                                emphasis: {
-                                    show: true,
-                                    textStyle: {
-                                        fontSize: '15',
-                                        fontWeight: 'bold'
+                        // myChart.style.height = 17+'rem';
+                        myChart.style.height = 17+'rem';
+                    };
+                    myChartContainer();
+                    var myChart = echarts.init(myChart);  
+                    
+                    // 指定图表的配置项和数据  
+                    option = {
+                        //设置图表与容器的间隔
+                        grid:{
+                            x:0,
+                            y:0,
+                            x2:0,
+                            y2:0,
+                            borderWidth:1
+                        },
+                        color: ['green','white','red','white'],
+                        series: [
+                            {
+                                type:'pie',
+                                radius: ['50%', '70%'],
+                                avoidLabelOverlap: false,
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '15',
+                                            fontWeight: 'bold'
+                                        }
                                     }
-                                }
-                            },
-                            data: this.data
-                        }
-                    ]
-                };
-
-                // 使用刚指定的配置项和数据显示图表。  
-                myChart.setOption(option);  
-                //浏览器大小改变时重置大小
-                // window.onresize = function () {
-                //     console.log(12121)
-                //     myChart.resize();
-                //     myChartContainer();
-                // };
+                                },
+                                data: this.data
+                            }
+                        ]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。  
+                    myChart.setOption(option);  
                 }
             },
             methods: {
