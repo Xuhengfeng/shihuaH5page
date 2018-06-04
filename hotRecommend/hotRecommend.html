@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>热门推荐</title>
+        <link rel="stylesheet" href="../css/reset.css">
+        <script src="../js/response.js"></script>
+        <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        header{
+            width: 100%;
+            overflow: hidden;
+        }
+        header img{
+            width: 100%;
+            vertical-align: top;
+        }
+        section{
+            padding: 0  0.24rem;
+        }
+        section p{
+            font-size: 0.3rem;
+            line-height: 1.5;
+            padding: 0.6rem 0 0.1rem;
+            text-align: justify;
+        }
+        li{
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e6e6e6;
+        }
+        li img{
+            width: 2.4rem;
+            height: 2rem;
+            background: #e6e6e6;
+            margin-right: 0.2rem;
+        }
+        li .content{
+            font-size: 0.2rem;
+        }
+        .item-title{
+            font-size: 0.32rem;
+            color: #222222;
+            line-height: 1.2;
+            text-align: justify;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+        .description{
+            font-size: 0.24rem;
+            color:#666666;
+            margin-top: 0.2rem;
+            line-height:1;
+        }
+        .houseTypeInfo{
+            font-size: 0.2rem;
+            color:#666666;
+            margin-top: 0.18rem;
+            line-height:1;
+        }
+        .houseTypeInfo span{
+            margin-right: 0.2rem
+        }
+        .housePrice{
+            font-size: 0.32rem;
+            color:#ff4343;
+            margin-top: 0.2rem;
+            line-height:1;
+        }
+        .housePrice text{
+            font-size: 0.22rem;
+            color:#666666;
+            margin-left: 0.25rem;
+            
+        }
+        </style>
+</head>
+<body>
+    <div id="box">
+        <header>
+            <img src="./imgs/bg.png" alt="">
+        </header>
+        <section>
+           <p>城市里生活久了，会对脚下的土地有依赖感，哪怕这城市并不待见你，你也住得并不舒适，你对租住的地方只定义为一个存身睡觉的地方。
+                当你拼够本了，想有一个阁子在这个城市安放自己的时候，你想要个好房。那么什么是好房？对于好房的定义，大多数人都不会认为是奢华，奢华是给别人看的，舒适才是给自己的。
+                我们能提供给你的不是一个空空的阁子，好房子是会说话的，是自带情感的，这些是我们为你筛选的好房子，能和你互动的空间。</p>
+            <ul>
+                <li v-for="item in 5" @click="startAPP()">
+                    <img src="">
+                    <div class="item-content">
+                        <div class="item-title">11</div>
+                        <div class="description">1 2 3</div>                        
+                        <div  class="houseTypeInfo">
+                            <span>1</span>22m²
+                        </div>
+    
+                            <div class="houseLabel">
+                                <span v-for="item2 in item.houseTag">22</span>
+                            </div>
+    
+                        <div v-if="flagPrice" class="housePrice">222万
+                            <span>22元/平</span>
+                        </div>
+                        <div v-if="!flagPrice" class="housePrice">22
+                            <span>元/月</span>
+                        </div>
+                    </div>
+                    
+                </li>
+                <!-- <li v-for="item in houseList">
+                    <img src="">
+                    <div class="item-content">
+                        <div class="item-title">{{item.houseTitle}}</div>
+                        <div class="description">{{item.areaName}} {{item.districtName}} {{item.houseDirection}}</div>                        
+                        <div  class="houseTypeInfo">
+                            <span>{{item.houseType}}</span>{{item.builtArea}}m²
+                        </div>
+    
+                            <div class="houseLabel">
+                                <span v-for="item2 in item.houseTag">{{item2}}</span>
+                            </div>
+    
+                        <div wx:if="{{flagPrice}}" class="housePrice">{{item.saleTotal}}万
+                            <span>{{item.salePrice}}元/平</span>
+                        </div>
+                        <div wx:if="{{!flagPrice}}" class="housePrice">{{item.rentPrice}}
+                            <span>元/月</span>
+                        </div>
+                    </div>
+                </li> -->
+            </ul>
+        </section>
+    </div>
+    <script src="../js/axiosurl.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data:{
+                houseList: {},
+                flagPrice: true,
+                city: null,
+            },
+            created() {
+                this.runtime();
+                var urlparams = this.parseUrl(url);
+
+                this.urlparams = urlparams;
+                this.city = urlparams.scityname;
+                this.houseListRequest(this.city);
+            },
+            methods: {
+                //判断运行环境
+                runtime() {
+                    var u = navigator.userAgent;
+                    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                },
+                houseListRequest() {
+                    axios.get(CONSULTANTINFO,{
+                        headers:{
+                            'Content-Type': "application/json;charset=UTF-8",
+                            'scity': city,
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res)
+                    })
+                },
+                startAPP() {  
+                    //安卓
+                    window.location = "scheme://beihai/1000000000006376492";  
+                },
+                parseUrl(url) {
+                    var urlStr=url.split("?")[1].split("&");
+                    var urlparams = {};
+                    for( let i=0;i<urlStr.length;i++){
+                        var item = urlStr[i].split("=")
+                        urlparams[item[0]]=item[1]
+                    }
+                    return urlparams;
+                }  
+            }
+        })
+    </script>
+</body>
+</html>

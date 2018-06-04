@@ -21,3 +21,4 @@ let GUIDEHAND = SERVER_IP + '/info/purchase-guide/index'//购房指南首页信�
 let GUIDEHANDETAIL = SERVER_IP + '/info/'//获取资讯内容详情
 let CONSULTANTINFO = SERVER_IP + '/consultant/info'//获取顾问详情
 let PROBLEMINFO = SERVER_IP + '/consultant/problem_info'//获取问题详情
+let PROBLEMINFO = SERVER_IP + '/consultant/problem_info'//获取四张图片详情
