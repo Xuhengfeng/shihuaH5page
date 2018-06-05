@@ -19,6 +19,8 @@ let STATISTICS = SERVER_IP + "/statistics/trend"; //查询 趋势统计
 let HOUSINGCS = SERVER_IP + '/statistics/housing60-days'//查看最近60天成交房源
 let GUIDEHAND = SERVER_IP + '/info/purchase-guide/index'//购房指南首页信息
 let GUIDEHANDETAIL = SERVER_IP + '/info/'//获取资讯内容详情
+
 let CONSULTANTINFO = SERVER_IP + '/consultant/info'//获取顾问详情
 let PROBLEMINFO = SERVER_IP + '/consultant/problem_info'//获取问题详情
-let PROBLEMINFO = SERVER_IP + '/consultant/problem_info'//获取四张图片详情
+
+let TWOHOUSELIST = SERVER_IP + '/house/query'//二手房列表

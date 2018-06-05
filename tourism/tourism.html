@@ -34,13 +34,15 @@
             margin: 0.4rem auto;
             text-align: center;
             font-size: 0.38rem;
-            color: #000000;
+            color: #222222;
+            font-weight: bold;
         }
         .card p{
             margin: 0 0.25rem;
             font-size: 0.3rem;
             line-height: 1.5;
-            text-align: justify;
+            text-align: center;
+            color: #666666;
         }
         section{
             margin: 0.6rem 0.25rem 0;
@@ -49,10 +51,11 @@
             border-radius: 0.1rem;
             overflow: hidden;
             box-shadow: 0 0  0.09rem 0.09rem  rgba(0,0,0,0.03);
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
         }
         section a{
-            float: left;
-            display: inline-block;
             width: 1.8rem;
             text-align: center;
             height: 0.8rem;
@@ -60,7 +63,6 @@
             font-size: 0.32rem;
             background: rgba(0, 100, 235,0.04);
             border-radius: 0.1rem;
-            margin-right: 0.44rem;
             margin-bottom: 0.3rem;
             border: 1px solid #e6e6e6;
             color: #000000;
@@ -78,22 +80,23 @@
     <header>
         <div class="card">
             <h3>世华旅居投资</h3>
-            <p>内容内容内容内容内容内容内容内
-                内容内容内容内容内容内容
-                内容内容内容内容内容内容
-                内容内容内容内容
-                内容内容容内容内容内容内容内容内容内容内容内容内容内容内容</p>
+            <p>
+             世华旅居投资，为您的生活带来一片宁静，无论是投资还是居住，世华将为您打造专属于你的理财（居住）方式。远离喧嚣，让心灵暂时的放空，暂时的休整只为走的更深更远！
+            </p>
+
         </div>
     </header>
     <section>
-        <a href="" v-for="item in 20">{{item}}北海</a>
+        <a :href="'tourismDetail.html?page='+index" v-for="(item,index) in citys">{{item}}</a>
     </section>
     </div>
     <script src="../js/vue.min.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
-            data:{}
+            data:{
+                citys: ['北海','威海','大理','湛江','桂林','海口','琼海','南宁','阳江','惠州','河源','清远','贵阳','柳州','衡阳','岳阳','防城港','汕头']
+            }
         })
     </script>
 </body>
