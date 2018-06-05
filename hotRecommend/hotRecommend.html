@@ -219,7 +219,8 @@
                 },
                 houseListRequest(city) {
                     let params = {
-                        pageNo: 1
+                        pageNo: 1,
+                        scity: city
                     }
                     axios.post(TWOHOUSELIST,params,{
                         headers:{
