@@ -196,18 +196,19 @@
                 houseList: [],
                 flagPrice: true,
                 city: 'beihai',
-                num: 4
+                num: 1
             },
             created() {
-                this.houseListRequest(this.city);
-
                 this.runtime();
                 var url = window.location.href;
-                console.log(url)
                 var urlparams = this.parseUrl(url);
-
-                this.urlparams = urlparams;
-                this.city = urlparams.scityname;
+                try{
+                    this.num = urlparams.num;
+                    this.city = urlparams.scityname;
+                }catch(err){
+                    console.log(err)
+                }
+                this.houseListRequest(this.city);
             },
             methods: {
                 //判断运行环境
@@ -255,13 +256,18 @@
 
                 },
                 parseUrl(url) {
-                    var urlStr=url.split("?")[1].split("&");
-                    var urlparams = {};
-                    for( let i=0;i<urlStr.length;i++){
-                        var item = urlStr[i].split("=")
-                        urlparams[item[0]]=item[1]
+                    try{
+                        var urlStr=url.split("?")[1].split("&");
+                        var urlparams = {};
+                        for( let i=0;i<urlStr.length;i++){
+                            var item = urlStr[i].split("=")
+                            urlparams[item[0]]=item[1]
+                        }
+                        return urlparams;
                     }
-                    return urlparams;
+                    catch(err){
+                        console.log(err)
+                    }
                 }  
             },
             mounted() {
