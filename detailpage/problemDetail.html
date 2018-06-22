@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>顾问详情</title>
+    <title>问题详情</title>
     <link rel="stylesheet" href="../css/reset.css">
     <script src="../js/response.js"></script>
     <style>
@@ -87,9 +87,9 @@
             align-items:center;
         }
         .userInfo .img{
-            flex: 0.8rem 0 0;
-            width: 0.8rem;
-            height: 0.8rem;
+            flex: 1rem 0 0;
+            width: 1rem;
+            height: 1rem;
             background: url('./imgs/avatar.png') no-repeat center center;
             border-radius: 50%;
             margin-right: 0.2rem;
@@ -134,6 +134,9 @@
         .red{
             background: #ffecec;
             color: #ff4343;
+        }
+        .name{
+            white-space: nowrap;
         }
         .answers{
             margin: 0  0.25rem 0.4rem; 
@@ -212,21 +215,19 @@
                     <div class="userInfo">
                         <div class="img"><img :src="item.photo"></div>
                         <div class="user">
-                            <div class="message"><a href="'sms:'+item.phone"><img src="imgs/duanxin.png"></a></div>
+                            <div class="message"><a :href="'sms:'+item.phone"><img src="imgs/duanxin.png"></a></div>
                             <div class="telphone"><a :href="'tel:'+item.phone"><img src="imgs/phone.png"></a></div>
                             
-                            <!-- 本来就已经是采纳的 -->
-                            <div>
+                            <!-- 已经是采纳的 只显示采纳-->
+                            <div v-if="item.whetherAdopt=='YES'?true:false">
                                 <div class="flag red">已采纳</div>
                             </div>
 
-                            <!-- 未采纳的 且是问题发起人 且登录状态的有权限添加已采纳 -->
-                            <div>
-                                <div class="flag gray" v-if=" agreeIndex == index? false : true " @click="toggleAgree(index)">待采纳</div>
-                                <div class="flag red" v-else  @click="toggleAgree(index)">已采纳</div>
+                            <!-- 未采纳的 不是问题发起人登录 不显示 换句话说未采纳是给问题发起人看的-->
+                            <div v-if="item.status == 2">
+                                <!-- 且是问题发起人 且登录状态的有权限添加已采纳 一经采纳不能更改 -->
+                                <div class="flag gray" v-if="agreetIndex==index?false:true"  @click="toggleAgree(item,index)">待采纳</div>
                             </div>
-                            
-                            <!-- 未采纳的 且普通登录用户 都不显示待采纳和已采纳-->
 
                             <div class="name">{{item.consultantName}}</div>
                         </div>
@@ -234,7 +235,8 @@
                     <div class="answers">
                         <div class="answersTime">{{item.answerTime}}</div>
                         <p>{{item.answerContent}}</p>
-                        <h4>希望能帮到您！回答满意请点赞采纳！</h4>
+                        <!-- 这句话也是给问题发起人看的 -->
+                        <h4 v-if="item.status==2&&agreetIndex==null?true:false">希望能帮到您！回答满意请点赞采纳！</h4>
                     </div>
                 </li>
             </ul>
@@ -254,7 +256,7 @@
                     city: '',
                     contProblemId: '',
                     addLike: null,//是否关注
-                    agreeIndex: null,//是否采纳
+                    agreetIndex: null,//是否采纳(一经采纳,便不在做更改)
                     token: null,//token值
                     isToken: false,//是否有token
                 },
@@ -276,30 +278,37 @@
                 },
                 filters:{
                     timefilter(val){
-                        var d = new Date(val);
-                        var time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-                        return time;
+                        let d = new Date(val);
+                        let year = d.getFullYear();
+                        let month = (d.getMonth()+1)>9?(d.getMonth()+1).toString():'0' +(d.getMonth()+1);
+                        let date = d.getDate()>9?d.getDate().toString():'0' + d.getDate();
+                        return year + '-'+month + '-'+date;
                     }
                 },
                 methods: {
                     togglelike() {
-                        if(this.addLike == 'cancel'){
-                            this.addLike = 'concern';
-                        }else{
-                            this.addLike = 'cancel';
-                        }
+                        this.addLike == 'cancel'
+                        ? this.addLike = 'concern'
+                        : this.addLike = 'cancel';
                         this.look();
                     },
-                    toggleAgree(index) {
-                        this.agreeIndex = index;
+                    //选择采纳
+                    toggleAgree(item, index) {
+                        //仅仅只操作一次
+                        if(this.agreetIndex==null) {
+                            this.agreetIndex = index;
+                            //采纳请求
+                            this.greet(item);
+                            //刷新页面
+                            this.answersDetialRequest();
+                        } 
                     },
                     //回答列表
                     answersDetialRequest() {
                         axios.get(PROBLEMINFO+"?contProblemId="+this.contProblemId,{
                             headers:{
                                 'Content-Type': "application/json;charset=UTF-8",
-                                'scity': this.city,
-                                'token': this.token
+                                'scity': this.city
                             },
                             params: {
                                 scity: this.city
@@ -330,6 +339,20 @@
                             console.log(res)
                         })
                     }, 
+                    //采纳
+                    greet(item) {
+                        let url = AGREET+"?contProblemId="+this.contProblemId+"&problemAnswerId="+item.contProblemId;
+                        axios({  
+                            method:"put",  
+                            url:url,  
+                            data:{},  
+                            headers:{  
+                                'scity': this.city
+                            }
+                        }).then(res=>{
+                            console.log(res)
+                        })
+                    },
                     // 解析url
                     parseUrl(url) {
                         var urlStr=url.split("?")[1].split("&");
@@ -339,13 +362,7 @@
                             urlparams[item[0]]=item[1]
                         }
                         return urlparams;
-                    },
-                    // 采纳
-                    greet() {
-                        axios.put(AGREET)
-                        .then(res=>{
-                        })
-                    },
+                    }
                        
 
                 }
