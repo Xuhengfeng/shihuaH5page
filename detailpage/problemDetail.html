@@ -91,9 +91,13 @@
             width: 0.8rem;
             height: 0.8rem;
             background: url('./imgs/avatar.png') no-repeat center center;
-            background-size:cover; 
             border-radius: 50%;
             margin-right: 0.2rem;
+            overflow: hidden;
+        }
+        .userInfo .img img{
+            width: 100%;
+            height: 100%;
         }
         .user{
             flex:1;
@@ -210,8 +214,20 @@
                         <div class="user">
                             <div class="message"><a href="'sms:'+item.phone"><img src="imgs/duanxin.png"></a></div>
                             <div class="telphone"><a :href="'tel:'+item.phone"><img src="imgs/phone.png"></a></div>
-                            <div class="flag gray" v-if=" agreeIndex == index? false : true " @click="toggleAgree(index)">待采纳</div>
-                            <div class="flag red" v-else  @click="toggleAgree(index)">已采纳</div>
+                            
+                            <!-- 本来就已经是采纳的 -->
+                            <div>
+                                <div class="flag red">已采纳</div>
+                            </div>
+
+                            <!-- 未采纳的 且是问题发起人 且登录状态的有权限添加已采纳 -->
+                            <div>
+                                <div class="flag gray" v-if=" agreeIndex == index? false : true " @click="toggleAgree(index)">待采纳</div>
+                                <div class="flag red" v-else  @click="toggleAgree(index)">已采纳</div>
+                            </div>
+                            
+                            <!-- 未采纳的 且普通登录用户 都不显示待采纳和已采纳-->
+
                             <div class="name">{{item.consultantName}}</div>
                         </div>
                     </div>
@@ -238,13 +254,13 @@
                     city: '',
                     contProblemId: '',
                     addLike: null,//是否关注
-                    agreeIndex: null,
+                    agreeIndex: null,//是否采纳
                     token: null,//token值
                     isToken: false,//是否有token
                 },
                 created() {
-                    let url = location.href;
-                    // let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=d2ViXzcyMDQ1MWRhLWRmYjctNDQyNy1hODM5LTExNzhiOTYyNGM2MV82NTYwMDAwMDA=";
+                    // let url = location.href;
+                    let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=d2ViXzcyMDQ1MWRhLWRmYjctNDQyNy1hODM5LTExNzhiOTYyNGM2MV82NTYwMDAwMDA=";
                     try{
                         this.urlparams = this.parseUrl(url);
                         this.contProblemId = this.urlparams.id;
