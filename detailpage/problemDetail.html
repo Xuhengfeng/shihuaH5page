@@ -188,13 +188,15 @@
                     <div style="margin-bottom:0.16rem">{{dataDetail.memberId}}</div>
                     <div>发布于: {{dataDetail.pubTime|timefilter}}</div>
                 </div>
-                <div class="two" v-if="!addLike" @click="togglelike()">
-                    <div class="star"><img src="imgs/star-off.png"></div>
-                    <div>取消关注</div> 
-                </div>
-                <div class="two" v-else @click="togglelike()">
-                    <div class="star"><img src="imgs/star-on.png"></div>
-                    <div>关注</div>
+                <div v-if="isToken">
+                    <div class="two" v-if="addLike == 'cancel'" @click="togglelike()">
+                        <div class="star"><img src="imgs/star-off.png"></div>
+                        <div>取消关注</div> 
+                    </div>
+                    <div class="two" v-if="addLike == 'concern'" @click="togglelike()">
+                        <div class="star"><img src="imgs/star-on.png"></div>
+                        <div>关注</div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -206,8 +208,8 @@
                     <div class="userInfo">
                         <div class="img"><img :src="item.photo"></div>
                         <div class="user">
-                            <div class="message"><a href="sms:15857009524"><img src="imgs/duanxin.png"></a></div>
-                            <div class="telphone"><a :href="'tel:+15857009524'"><img src="imgs/phone.png"></a></div>
+                            <div class="message"><a href="'sms:'+item.phone"><img src="imgs/duanxin.png"></a></div>
+                            <div class="telphone"><a :href="'tel:'+item.phone"><img src="imgs/phone.png"></a></div>
                             <div class="flag gray" v-if=" agreeIndex == index? false : true " @click="toggleAgree(index)">待采纳</div>
                             <div class="flag red" v-else  @click="toggleAgree(index)">已采纳</div>
                             <div class="name">{{item.consultantName}}</div>
@@ -235,19 +237,26 @@
                     urlparams: null,
                     city: '',
                     contProblemId: '',
-                    token: '',
-                    addLike: null,
-                    agreeIndex: null
+                    addLike: null,//是否关注
+                    agreeIndex: null,
+                    token: null,//token值
+                    isToken: false,//是否有token
                 },
                 created() {
-                    // var url = location.href;
-                    let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=null"
+                    let url = location.href;
+                    // let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=d2ViXzcyMDQ1MWRhLWRmYjctNDQyNy1hODM5LTExNzhiOTYyNGM2MV82NTYwMDAwMDA=";
                     try{
                         this.urlparams = this.parseUrl(url);
                         this.contProblemId = this.urlparams.id;
-                        this.city = urlparams.scityname;
+                        this.city =  this.urlparams.scityname;
+                        if(!this.urlparams.token) {
+                            this.isToken = false;
+                        }else{
+                            this.isToken = true;
+                            this.token =  this.urlparams.token;
+                        }
                     }catch(e){};
-                    this.answersDetialRequest(this.contProblemId, this.city);
+                    this.answersDetialRequest();
                 },
                 filters:{
                     timefilter(val){
@@ -258,32 +267,53 @@
                 },
                 methods: {
                     togglelike() {
-                        this.addLike = !this.addLike;
+                        if(this.addLike == 'cancel'){
+                            this.addLike = 'concern';
+                        }else{
+                            this.addLike = 'cancel';
+                        }
+                        this.look();
                     },
                     toggleAgree(index) {
                         this.agreeIndex = index;
                     },
-                    answersDetialRequest(id,city) {
-                        axios.get(PROBLEMINFO+"?contProblemId="+id,{
+                    //回答列表
+                    answersDetialRequest() {
+                        axios.get(PROBLEMINFO+"?contProblemId="+this.contProblemId,{
                             headers:{
                                 'Content-Type': "application/json;charset=UTF-8",
-                                'scity': city
+                                'scity': this.city,
+                                'token': this.token
                             },
                             params: {
-                                scity: city
+                                scity: this.city
                             }
                         })
                         .then(res=> {
                             let newData = res.data.data;
                             try{
                                 newData.label = newData.label.split(',');
-                            }catch(e){
-                                console.log(e);
-                            }
-                            this.addLike = res.concernStatus=="YES"?true:false; 
+                            }catch(e){}
+                            //是否已经关注
+                            this.addLike = res.concernStatus=="YES"?'cancel':'concern'; 
                             this.dataDetail = newData;
                         })
                     },
+                    //关注
+                    look() {
+                        let url = LOOK+"?contProblemId="+this.contProblemId+"&state="+this.addLike;
+                        axios({  
+                            method:"put",  
+                            url:url,  
+                            data:{},  
+                            headers:{  
+                                'scity': this.city,
+                                'token': this.token
+                            }
+                        }).then(res=>{
+                            console.log(res)
+                        })
+                    }, 
                     // 解析url
                     parseUrl(url) {
                         var urlStr=url.split("?")[1].split("&");
@@ -293,7 +323,15 @@
                             urlparams[item[0]]=item[1]
                         }
                         return urlparams;
-                    }
+                    },
+                    // 采纳
+                    greet() {
+                        axios.put(AGREET)
+                        .then(res=>{
+                        })
+                    },
+                       
+
                 }
             })
     </script>

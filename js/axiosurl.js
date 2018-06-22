@@ -22,3 +22,6 @@ let GUIDEHANDETAIL = SERVER_IP + '/info/'//获取资讯内容详情
 let CONSULTANTINFO = SERVER_IP + '/consultant/info'//获取顾问详情
 let PROBLEMINFO = SERVER_IP + '/consultant/problem_info'//获取问题详情
 let TWOHOUSELIST = SERVER_IP + '/house/query'//二手房列表
+let AGREET = SERVER_IP + '/consultant/adopt'//采纳
+let LOOK = SERVER_IP + '/consultant/concern'//是否关注
+
