@@ -40,9 +40,10 @@
             },
             created() {
                 var url = location.href;
-                this.urlparams = this.parseUrl(url);
+                try{
+                    this.urlparams = this.parseUrl(url);
+                }catch(error){}
                 this.guideDetailRequest();
-                
             },
             filters:{
             	timefilter(val){
@@ -65,13 +66,12 @@
             },
             methods:{
             	guideDetailRequest() {
-                    var city = 'beihai';
-                    console.log(1212)
-            		axios.get(GUIDEHANDETAIL+this.urlparams.id,{
+                    var city = this.urlparams.scityname?this.urlparams.scityname:'beihai';
+                    var id = this.urlparams.id?this.urlparams.id:'null';
+            		axios.get(GUIDEHANDETAIL+id,{
                         headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
                     })
                     .then((res) => {
-                        console.log(res)
                         this.detailData = res.data.data;
                     })
                     .catch(err=>{
@@ -79,12 +79,14 @@
                     })
                 },
                 parseUrl(url) {
-                    var urlStr=url.split("?")[1].split("&");
                     var urlparams = {};
-                    for( let i=0;i<urlStr.length;i++){
-                        var item = urlStr[i].split("=")
-                        urlparams[item[0]]=item[1]
-                    }
+                    try{
+                        var urlStr=url.split("?")[1].split("&");
+                        for( let i=0;i<urlStr.length;i++){
+                            var item = urlStr[i].split("=")
+                            urlparams[item[0]]=item[1]
+                        }
+                    }catch(error){};
                     return urlparams;
                 }
             }
