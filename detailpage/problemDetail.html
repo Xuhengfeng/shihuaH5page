@@ -193,7 +193,7 @@
             <div class="description">
                 <div class="one">
                     <div style="margin-bottom:0.16rem">{{dataDetail.memberId}}</div>
-                    <div>发布于: {{dataDetail.pubTime|timefilter}}</div>
+                    <div v-cloak>发布于: {{dataDetail.pubTime|timefilter}}</div>
                 </div>
                 <div v-if="isToken">
                     <div class="two" v-if="addLike == 'cancel'" @click="togglelike()">
