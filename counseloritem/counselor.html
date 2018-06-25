@@ -75,11 +75,12 @@
                     token: null
                 },
                 created() {
-                    // var url = location.href;
+                    var url = location.href;
                     // id 列表id
                     // scityname 城市拼音
                     // token 尽量都传过来
-                    var url = 'xxxxxxx?id=434&scityname=beihai&token=d2ViX2MxMTE0YzVhLWYwOGEtNDg0OS1iZWM1LTMzZThlOTBmYWM3Ml8w';
+                    
+
                     var urlparams = this.parseUrl(url);
                    try{
                        this.urlparams = urlparams;
@@ -92,11 +93,11 @@
                    }
                 },
                 methods: {
-                    answerRequest(id, city) {
-                        axios.get(CONSULTANTINFO+"?employeeId="+id,{
+                    answerRequest() {
+                        axios.get(CONSULTANTINFO+"?employeeId="+this.employeeId,{
                             headers:{
                                 'Content-Type': "application/json;charset=UTF-8",
-                                'scity': city,
+                                'scity': this.city,
                             }
                         })
                         .then((res) => {
