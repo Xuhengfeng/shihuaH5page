@@ -262,11 +262,12 @@
                 },
                 created() {
                     let url = location.href;
-                    let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=d2ViXzcyMDQ1MWRhLWRmYjctNDQyNy1hODM5LTExNzhiOTYyNGM2MV82NTYwMDAwMDA=";
+                    // let url = "http://custh5.shihua365.xin/detailpage/problemDetail.html?id=1&scityname=beihai&token=d2ViXzcyMDQ1MWRhLWRmYjctNDQyNy1hODM5LTExNzhiOTYyNGM2MV82NTYwMDAwMDA=";
                     try{
                         this.urlparams = this.parseUrl(url);
                         this.contProblemId = this.urlparams.id;
                         this.city =  this.urlparams.scityname;
+                        this.token =  this.urlparams.token;
                         if(!this.urlparams.token) {
                             this.isToken = false;
                         }else{
