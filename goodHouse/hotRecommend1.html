@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>品质租房</title>
+        <title>店长推荐</title>
         <link rel="stylesheet" href="../css/reset.css">
         <script src="../js/response.js"></script>
         <style>
@@ -124,13 +124,10 @@
             <img src="./imgs/bg.png" alt="">
         </header>
         <section>
-
-            <!-- 品质租房 -->
+            <!-- 店长推荐 -->
             <div>
-                <p> 无论你在这个城市做什么工作，你都会希望5点以后的时间是自由的、私密的，一个让你安心的住处无疑最能释放疲累。</p>
-                <p>外面的世界很重要，但屋里的世界才是你的内心，你不可以改变上司那些糟糕的决定，但你可以决定自己晚上5点以后睡在哪里，你的地盘在哪里你决定！</p>
+                <p>如果你有选择恐惧症，又不想闭着眼睛乱选，听店长的也许是个好主意。专业的事交给专业的人来做，店长过手的好房子成百上千，深谙其中的门道。无论是性价比，还是舒适性，功能性，家庭需求……店长通通为你考虑过了，这些房源都是店长殚精竭虑，反复筛选才确定推荐的。</p>
             </div>
-          
 
             <ul>  
                 <li v-for="item in houseList" :data-sdid="item.sdid" @click="startAPP($event)">
@@ -146,7 +143,9 @@
                                 <span v-for="item2 in item.houseTag">{{item2}}</span>
                             </div>
     
-                        <div class="housePrice">{{item.rentPrice}}元/月</div>
+                        <div class="housePrice">{{item.saleTotal}}万
+                            <span>{{item.salePrice}}元/平</span>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -188,7 +187,7 @@
                 //请求
                 houseListRequest() {
                     let params = {pageNo: 1,scity: this.city};
-                    axios.post(RENTHOUSELIST,params,{
+                    axios.post(TWOHOUSELIST,params,{
                         headers:{
                             'Content-Type': "application/json;charset=UTF-8",
                             'scity': this.city,
@@ -212,9 +211,9 @@
                 // 跳转
                 startAPP(e) {
                     var sdid = e.currentTarget.dataset.sdid;
-                    this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=2&type="+this.type; 
+                    this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=1"+"&type="+this.type; 
                     switch(this.type){
-                        case 'web': return location.href = "http://custapp.shihua365.xin/#/rentingitem/"+sdid+"?id=2"; 
+                        case 'web': return location.href = "http://custapp.shihua365.xin/#/rentingitem/"+sdid+"?id=1"; 
                         case 'ios': return location.href = this.url;  
                         case 'android': return location.href = this.url;
                     }
