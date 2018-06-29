@@ -47,14 +47,7 @@
                 urlparams: null,
             },
             created() {
-                try{
-                    var url = location.href;
-                    this.urlparams = this.parseUrl(url);
-                    this.city = urlparams.cityName;
-                    this.id = urlparams.id;
-                    this.type = urlparams.type.toLowerCase();
-                    this.guideDetailRequest();
-                }catch(err){}
+                this.guideDetailRequest();
             },
             filters:{
             	timefilter(val){
@@ -79,7 +72,9 @@
             },
             methods:{
             	guideDetailRequest() {
-            		axios.get(GUIDEHANDETAIL+this.id,{
+                    var url = location.href;
+                    this.urlparams = this.parseUrl(url);
+            		axios.get(GUIDEHANDETAIL+this.urlparams.id,{
                         headers:{'Content-Type': "application/json;charset=UTF-8",'scity': this.city}
                     })
                     .then(res => {
