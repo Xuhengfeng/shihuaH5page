@@ -40,10 +40,14 @@
         </section>
         <div class="nopayload"  v-show="!pdlist"><img src="./imgs/loading.gif"></div>
     </div>
+    <!-- axios库 -->
     <script src="../js/axios.min.js"></script>
     <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
     <script src="../js/mescroll.min.js"></script>
+    
+    <!-- 微信sdk -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
@@ -55,7 +59,7 @@
                 selectNum: 0,
                 urlparams: null,
                 page: 1,
-                type: 'web',
+                type: 'wx',
                 city: 'beihai'
             },
             mounted(){
@@ -116,11 +120,16 @@
                 detialh5page(index) {
                     var url = this.pdlist.infoContentList[index].contentUrl;
                     var params = this.parseUrl(url);
-                    switch(this.type){
-                        case 'web': return location.href="../detailpage/guideDetail.html?id="+params.id;
-                        case 'ios': return "scheme://host/pathPrefix?id="+params.id;
-                        case 'android': return "scheme://host/pathPrefix?id="+params.id;
+                    location.href="../detailpage/guideDetail.html?id="+params.id;
+                    if(this.type == 'wx'){
+                        this.wx(params.id);
                     }
+                },
+                // 传值给wx
+                wx(num) {
+                    var url = "http://custh5.shyj.cn/detailpage/guideDetail.html?id=" + num;
+                    var newUrl =  "h5Pages?redirect="+url;
+                    wx.miniProgram.navigateTo({url: newUrl});
                 },
 				upCallback() {
                     let page = this.page++;

@@ -35,6 +35,9 @@
         var vm = new Vue({
             el: '#box',
             data: {
+                city: 'beihai',
+                type: '',
+                id: 1,
                 detailData: {
                     title:null,
                     publishDateTime:null,
@@ -44,10 +47,14 @@
                 urlparams: null,
             },
             created() {
-                var url = location.href;
-                this.urlparams = this.parseUrl(url);
-                this.guideDetailRequest();
-                
+                try{
+                    var url = location.href;
+                    this.urlparams = this.parseUrl(url);
+                    this.city = urlparams.cityName;
+                    this.id = urlparams.id;
+                    this.type = urlparams.type.toLowerCase();
+                    this.guideDetailRequest();
+                }catch(err){}
             },
             filters:{
             	timefilter(val){
@@ -72,13 +79,10 @@
             },
             methods:{
             	guideDetailRequest() {
-                    var city = 'beihai';
-                    console.log(1212)
-            		axios.get(GUIDEHANDETAIL+this.urlparams.id,{
-                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
+            		axios.get(GUIDEHANDETAIL+this.id,{
+                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': this.city}
                     })
-                    .then((res) => {
-                        console.log(res)
+                    .then(res => {
                         this.detailData = res.data.data;
                     })
                     .catch(err=>{
