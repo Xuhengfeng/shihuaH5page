@@ -1,15 +1,20 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 50px;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>购房指南</title>
+    <script>
+        window.onload=window.onresize=window.onpageshow=function() {
+            var wWidth = window.innerWidth;
+            if(wWidth>=414) wWidth = 414;
+            document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
+        }
+    </script>
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/mescroll.min.css">
     <link rel="stylesheet" href="./css/guideHand.css">
-    
 </head>
 <body>
     <div id="box">
@@ -35,7 +40,6 @@
         </section>
         <div class="nopayload"  v-show="!pdlist"><img src="./imgs/loading.gif"></div>
     </div>
-    <script src="../js/response.js"></script>
     <script src="../js/axios.min.js"></script>
     <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
@@ -51,6 +55,7 @@
                 selectNum: 0,
                 urlparams: null,
                 page: 1,
+                type: 'web',
                 city: 'beihai'
             },
             mounted(){
@@ -74,22 +79,32 @@
             },
             filters:{
             	timefilter(val){
-            		var time;
-            		var diff = (new Date().getTime() - val)/1000;
-			        var h = diff/3600;//小时
-			        var hours = parseInt(h);
-			        var m = (h - hours)*60;//分钟
-			        var minute = parseInt(m);
-			        var s = (m - minute)*60;//秒
-			        var second = parseInt(s);
-			        var day = (h/24)>0? parseInt(h/24): 0;
-			        if(day==0){
-		          	  time = hours + '小时' + minute + '分前';
-			      	}else{
-			          time = day + '天' + hours + '小时前';
-			        }
-			      	return time
+                    let fmt  = "yyyy-MM-dd hh:mm:ss";
+                    let date = new Date(val);
+            		var o = {   
+                        "M+" : date.getMonth()+1,                 //月份   
+                        "d+" : date.getDate(),                    //日   
+                        "h+" : date.getHours(),                   //小时   
+                        "m+" : date.getMinutes(),                 //分   
+                        "s+" : date.getSeconds(),                 //秒   
+                        "q+" : Math.floor((date.getMonth()+3)/3), //季度   
+                        "S"  : date.getMilliseconds()             //毫秒   
+                    };   
+                    if(/(y+)/.test(fmt))   
+                        fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));   
+                    for(var k in o)   
+                        if(new RegExp("("+ k +")").test(fmt))   
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+                    return fmt; 
             	}
+            },
+            created() {
+                try{
+                    var url = location.href;
+                    var urlparams = this.parseUrl(url);
+                    this.city = urlparams.cityName;
+                    this.type = urlparams.type.toLowerCase();
+                }catch(err){}
             },
             methods:{
                 selectItem(index) {
@@ -98,43 +113,28 @@
                     this.pdlist = this.pdlist2[index];    
                     this.upCallback();                
                 },
-                titleDataRequest() {
-                    axios.get(GUIDEHAND,{
-                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
-                    })
-                    .then((res) => {
-                        console.log(res);
-                    })
-                },
                 detialh5page(index) {
                     var url = this.pdlist.infoContentList[index].contentUrl;
                     var params = this.parseUrl(url);
-                    location.href="../detailpage/guideDetail.html?id="+params.id;
+                    switch(this.type){
+                        case 'web': return location.href="../detailpage/guideDetail.html?id="+params.id;
+                        case 'ios': return "scheme://host/pathPrefix?id="+params.id;
+                        case 'android': return "scheme://host/pathPrefix?id="+params.id;
+                    }
                 },
 				upCallback() {
-                    let city = this.city;
                     let page = this.page++;
                     let index = this.selectNum;
-                    this.guideDataRequest(page, city, index);
-					// 	//更新列表数据
-					// 	self.pdlist = self.pdlist.concat(curPageData);
-					// 	//方法一(推荐): 后台接口有返回列表的总页数 totalPage
-					// 	//self.mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
-						
-					// 	//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
-					// 	//self.mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
-						
-					// 	//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
-					// 	//self.mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
-						
-					// 	//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
-					// 	self.mescroll.endSuccess(curPageData.length);
+                    this.guideDataRequest(page, index);
                 },
-                guideDataRequest(page, city, selectNum) {
-                    axios.get(GUIDEHAND,{
-                        headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
+                guideDataRequest(page, selectNum) {
+                    axios.get(GUIDEHAND, {
+                        params: {
+                            'pageNo': page
+                        },
+                        headers: {'Content-Type': "application/json;charset=UTF-8",'scity': this.city},
                     })
-                    .then((res) => {
+                    .then(res=>{
                         var arr = res.data.data;
                         this.menudata = arr;
                         this.pdlist = arr[selectNum];

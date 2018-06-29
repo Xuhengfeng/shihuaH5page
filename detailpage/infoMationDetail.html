@@ -1,13 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 50px;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>资讯详情</title>
+    <script>
+        window.onload=window.onresize=window.onpageshow=function() {
+            var wWidth = window.innerWidth;
+            if(wWidth>=414) wWidth = 414;
+            document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
+        }
+    </script>
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="./css/guideDetail.css">
-    <script src="../js/response.js"></script>
 </head>
 <body>
     <div id="box">
@@ -21,8 +27,8 @@
                 <div v-html="detailData.content"></div>         
             </div>
         </section>
+        <div class="nopayload"  v-show="!detailData"><img src="./imgs/loading.gif"></div>
     </div>
-    <script src="../js/response.js"></script>
     <script src="../js/axios.min.js"></script>
     <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
