@@ -157,6 +157,8 @@
     <script src="../js/axios.min.js"></script>
     <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
+    <!-- 微信sdk -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
@@ -217,7 +219,12 @@
                         case 'web': return location.href = "http://custapp.shihua365.xin/#/rentingitem/"+sdid+"?id=2"; 
                         case 'ios': return location.href = this.url;  
                         case 'android': return location.href = this.url;
+                        case 'wx': return this.wx(sdid);
                     }
+                },
+                wx(sdid) {
+                    var newUrl =  "../houseDetail/houseDetail2?id="+sdid;
+                    wx.miniProgram.navigateTo({url: newUrl});
                 },
                 //解析url
                 parseUrl(url) {

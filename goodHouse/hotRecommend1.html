@@ -156,6 +156,8 @@
     <script src="../js/axios.min.js"></script>
     <script src="../js/axiosurl.js"></script>
     <script src="../js/vue.min.js"></script>
+    <!-- 微信sdk -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
     <script>
         var vm = new Vue({
             el: '#box',
@@ -163,7 +165,7 @@
                 houseList: [],
                 flagPrice: true,
                 city: 'beihai',
-                type: '',//判断端的类型
+                type: 'wx',//判断端的类型
                 id: 1,//判断板块的类型
                 sdid: '',
                 url: null,
@@ -210,14 +212,18 @@
                 */ 
                 // 跳转
                 startAPP(e) {
-                    console.log(111)
                     var sdid = e.currentTarget.dataset.sdid;
                     this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=1"+"&type="+this.type; 
                     switch(this.type){
                         case 'web': return location.href = "http://custapp.shihua365.xin/#/rentingitem/"+sdid+"?id=1"; 
                         case 'ios': return location.href = this.url;  
                         case 'android': return location.href = this.url;
+                        case 'wx': return this.wx(sdid);
                     }
+                },
+                wx(sdid) {
+                    var newUrl =  "../houseDetail/houseDetail2?id="+sdid;
+                    wx.miniProgram.navigateTo({url: newUrl});
                 },
                 //解析url
                 parseUrl(url) {

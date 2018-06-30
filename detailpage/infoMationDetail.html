@@ -73,7 +73,7 @@
             methods:{
             	guideDetailRequest() {
                     var city = this.urlparams.scityname?this.urlparams.scityname:'beihai';
-                    var id = this.urlparams.id?this.urlparams.id:'null';
+                    var id = this.urlparams.id ? this.urlparams.id : null;
             		axios.get(GUIDEHANDETAIL+id,{
                         headers:{'Content-Type': "application/json;charset=UTF-8",'scity': city}
                     })

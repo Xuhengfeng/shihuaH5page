@@ -59,7 +59,7 @@
                 selectNum: 0,
                 urlparams: null,
                 page: 1,
-                type: 'wx',
+                type: '',
                 city: 'beihai'
             },
             mounted(){
@@ -120,16 +120,16 @@
                 detialh5page(index) {
                     var url = this.pdlist.infoContentList[index].contentUrl;
                     var params = this.parseUrl(url);
-                    location.href="../detailpage/guideDetail.html?id="+params.id;
                     if(this.type == 'wx'){
                         this.wx(params.id);
+                    }else{
+                        location.href="../detailpage/guideDetail.html?id="+params.id;
                     }
                 },
                 // 传值给wx
                 wx(num) {
-                    var url = "http://custh5.shyj.cn/detailpage/guideDetail.html?id=" + num;
-                    var newUrl =  "h5Pages?redirect="+url;
-                    wx.miniProgram.navigateTo({url: newUrl});
+                    var http = "http://custh5.shyj.cn/detailpage/guideDetail.html";
+                    wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?newHouseId=${num}&redirect=${http}`});
                 },
 				upCallback() {
                     let page = this.page++;
