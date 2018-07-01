@@ -5,7 +5,7 @@
     	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
 		<title>世华地产h5页面总入口</title>
 		<script>
-			window.onload=window.onresize=function() {
+			window.onpageshow=window.onresize=function() {
 				var wWidth = window.innerWidth;
 				if(wWidth>=414) wWidth = 414;
 				document.getElementsByTagName("html")[0].style.fontSize = wWidth/750 * 100 + 'px';
