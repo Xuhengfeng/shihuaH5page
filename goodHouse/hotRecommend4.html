@@ -130,7 +130,7 @@
                 <p>当你拼够本了，想有一个阁子在这个城市安放自己的时候，你想要个好房。那么什么是好房？对于好房的定义，大多数人都不会认为是奢华，奢华是给别人看的，舒适才是给自己的。
                     我们能提供给你的不是一个空空的阁子，好房子是会说话的，是自带情感的，这些是我们为你筛选的好房子，能和你互动的空间。</p>
             </div>
-            <ul>  
+            <ul v-show="houseList.length">  
                 <li v-for="item in houseList" :data-sdid="item.sdid" @click="startAPP($event)">
                     <img :src="item.housePic">
                     <div class="item-content">
@@ -151,6 +151,7 @@
                 </li>
             </ul>
         </section> 
+        <div class="nopayload"  v-show="!houseList.length"><img src="./imgs/loading.gif"></div>
     </div>
     <!-- 屏蔽广告 -->
     <script src="../js/shield.js"></script>
@@ -223,7 +224,7 @@
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "../houseDetail/houseDetail2?id="+sdid;
+                    var newUrl =  "../houseDetail/houseDetail?id="+sdid;
                     wx.miniProgram.navigateTo({url: newUrl});
                 },
                 //解析url

@@ -115,6 +115,29 @@
             display: flex;
             flex-flow: row nowrap;
         }
+        .nodate{
+            text-align: center;
+            line-height: 1rem;
+            font-size: 0.3rem;
+        }
+        .nopayload{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: #ffffff;
+        }
+        .nopayload img{
+            height: 50px;
+            width: 50px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
         </style>
 </head>
 <body>
@@ -132,7 +155,7 @@
             </div>
           
 
-            <ul>  
+            <ul v-show="houseList.length">  
                 <li v-for="item in houseList" :data-sdid="item.sdid" @click="startAPP($event)">
                     <img :src="item.housePic">
                     <div class="item-content">
@@ -151,6 +174,7 @@
                 </li>
             </ul>
         </section> 
+        <div class="nopayload"  v-show="!houseList.length"><img src="./imgs/loading.gif"></div>
     </div>
     <!-- 屏蔽广告 -->
     <script src="../js/shield.js"></script>
@@ -223,7 +247,7 @@
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "../houseDetail/houseDetail2?id="+sdid;
+                    var newUrl =  "../houseDetail/houseDetail3?id="+sdid;
                     wx.miniProgram.navigateTo({url: newUrl});
                 },
                 //解析url

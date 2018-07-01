@@ -214,6 +214,7 @@
 		    		}
 		    	})
 		    	.then(res=>{
+					console.log(res)
 		    		this.data=res.data.data
 		    		for(let i=0;i<this.data.trendList.length;i++){
 		    			this.avgPricelist.push(this.data.trendList[i].avgPrice)
