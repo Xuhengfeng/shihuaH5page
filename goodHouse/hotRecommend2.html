@@ -239,14 +239,14 @@
                     var sdid = e.currentTarget.dataset.sdid;
                     this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=1"+"&type="+this.type; 
                     switch(this.type){
-                        case 'web': return location.href = "http://custapp.shihua365.xin/#/rentingitem/"+sdid+"?id=1"; 
+                        case 'web': return location.href = "https://custapis.shyj.cn/#/rentingitem/"+sdid+"?id=1"; 
                         case 'ios': return location.href = this.url;  
                         case 'android': return location.href = this.url;
                         case 'wx': return this.wx(sdid);
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "../houseDetail/houseDetail?id="+sdid;
+                    var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city;
                     wx.miniProgram.navigateTo({url: newUrl});
                 },
                 //解析url

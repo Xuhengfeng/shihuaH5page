@@ -1,5 +1,5 @@
 'use strict';
-const SERVER_IPS = ["http://custapi.shihua365.xin/custAppApi","http://112.74.181.229:7031/custAppApi"];//api接口
+const SERVER_IPS = ["https://custapis.shyj.cn/custAppApi","http://112.74.181.229:7031/custAppApi"];//api接口
 const SERVERINDEX = 0;
 const SERVER_IP = SERVER_IPS[SERVERINDEX];
 const $axios = axios.create({
