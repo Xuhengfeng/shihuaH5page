@@ -317,7 +317,7 @@
 	</head>
 	<body>
 		<div id="cnxhlist">
-            <div class="cnxhlistitem" v-for="item in list" :data-sdid="item.sdid" @click="startAPP($event)">
+            <div class="cnxhlistitem" v-for="item in list" @click="startAPP(item)">
                 <div class="cnxhcontnet">
                     <div class="cnxhcontnetleft">
                         <img :src="item.housePic " alt="">
@@ -359,8 +359,8 @@
 		       showtwo:false,
 		       page:1,
 		       numberone:true,
-           type: 'wx',
-           city: null,
+           type: '',
+           city: 'beihai',
 		       project:"",//get穿参
 		    },
 		    created(){
@@ -375,7 +375,7 @@
 		    },
 		    mounted() {
 			    window.addEventListener("scroll", this.handleScroll);
-			},
+			  },
 		    methods:{
 		    //滑动监听
 		    handleScroll(){
@@ -436,7 +436,7 @@
 		  		})
 		  	},
 				startAPP(e) {
-            var sdid = e.currentTarget.dataset.sdid;
+            var sdid = item.sdid;
             this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=1"+"&type="+this.type; 
             switch(this.type){
                 case 'web': return location.href = "http://custapp.shyj.cn/#/rentingitem/"+sdid+"?id=1"; 
@@ -446,8 +446,8 @@
             }
         },
         wx(sdid) {
-          var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type=wx"; 
-          wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?redirect=${newUrl}`});
+            var newUrl =  "../houseDetail/houseDetail?id="+sdid+"&scity="+this.city; 
+            wx.miniProgram.navigateTo({url: newUrl})
         },
         //解析url
         parseUrl(url) {

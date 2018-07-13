@@ -189,8 +189,7 @@
                 houseList: [],
                 flagPrice: true,
                 city: 'beihai',
-                type: '',//判断端的类型
-                id: 1,//判断板块的类型
+                type: '',
                 sdid: '',
                 url: null,
             },
@@ -198,14 +197,10 @@
                 try{
                     var url = location.href;
                     var urlparams = this.parseUrl(url);
-                    this.id = urlparams.id;
                     this.city = urlparams.cityName;
                     this.type = urlparams.type.toLowerCase();
-                    if(urlparams.id==1){
-                        this.flagPrice = true;
-                    }else{
-                        this.flagPrice = false;
-                    }
+                    console.log(url)
+                    console.log(urlparams)
                 }catch(err){}
                 this.houseListRequest(this.city);
             },
@@ -246,8 +241,8 @@
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type=wx"; 
-                    wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?redirect=${newUrl}`});
+                    var newUrl =  "../houseDetail/houseDetail?id="+sdid+"&scity="+this.city; 
+                    wx.miniProgram.navigateTo({url: newUrl})
                 },
                 //解析url
                 parseUrl(url) {
