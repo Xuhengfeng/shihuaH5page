@@ -247,8 +247,8 @@
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "houseDetail/houseDetail3?id="+sdid+"&scity="+this.city;
-                    wx.miniProgram.navigateTo({url: newUrl});
+                    var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type="+this.type; 
+                    wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?redirect=${newUrl}`});
                 },
                 //解析url
                 parseUrl(url) {

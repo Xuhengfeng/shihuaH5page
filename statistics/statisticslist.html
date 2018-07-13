@@ -317,7 +317,7 @@
 	</head>
 	<body>
 		<div id="cnxhlist">
-            <div class="cnxhlistitem" v-for="item in list">
+            <div class="cnxhlistitem" v-for="item in list" :data-sdid="item.sdid" @click="startAPP($event)">
                 <div class="cnxhcontnet">
                     <div class="cnxhcontnetleft">
                         <img :src="item.housePic " alt="">
@@ -427,7 +427,33 @@
 		  			
 		  		})
 		  	},
-				
+				startAPP(e) {
+            var sdid = e.currentTarget.dataset.sdid;
+            this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=1"+"&type="+this.type; 
+            switch(this.type){
+                case 'web': return location.href = "https://custapis.shyj.cn/#/rentingitem/"+sdid; 
+                case 'ios': return location.href = this.url;  
+                case 'android': return location.href = this.url;
+                case 'wx': return this.wx(sdid);
+            }
+        },
+        wx(sdid) {
+          var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type="+this.type; 
+          wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?redirect=${newUrl}`});
+        },
+        //解析url
+        parseUrl(url) {
+            try{
+                var urlStr=url.split("?")[1].split("&");
+                var urlparams = {};
+                for( let i=0;i<urlStr.length;i++){
+                    var item = urlStr[i].split("=")
+                    urlparams[item[0]]=item[1]
+                }
+                return urlparams;
+            }
+            catch(err){}
+        },
 				// 自适应代码
 				_remdcs(){
 			       	var doc = window.document;
