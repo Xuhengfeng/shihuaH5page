@@ -213,14 +213,12 @@
 		    		}
 		    	})
 		    	.then(res=>{
-					console.log(res)
 		    		this.data=res.data.data
 		    		for(let i=0;i<this.data.trendList.length;i++){
 		    			this.avgPricelist.push(this.data.trendList[i].avgPrice)
 		    			this.marketPricelist.push(this.data.trendList[i].marketPrice)
 		    			this.suiteCountlist.push(this.data.trendList[i].suiteCount)
 		    			this.monthlist.push(this.data.trendList[i].month+"月")
-		    		
 		    		}
 		    		this.avgPricelist.reverse()
 		    		this.marketPricelist.reverse()
