@@ -240,14 +240,14 @@
                     var sdid = e.currentTarget.dataset.sdid;
                     this.url = "scheme://host/pathPrefix?cityName="+this.city+"&sdid="+sdid+"&id=2&type="+this.type; 
                     switch(this.type){
-                        case 'web': return location.href = "https://custapis.shyj.cn/#/rentingitem/"+sdid+"?id=2"; 
+                        case 'web': return location.href = "http://custapp.shyj.cn/#/rentingitem/"+sdid+"?id=2"; 
                         case 'ios': return location.href = this.url;  
                         case 'android': return location.href = this.url;
                         case 'wx': return this.wx(sdid);
                     }
                 },
                 wx(sdid) {
-                    var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type="+this.type; 
+                    var newUrl =  "houseDetail/houseDetail?id="+sdid+"&scity="+this.city+"&id=1"+"&type=wx"; 
                     wx.miniProgram.navigateTo({url: `../h5Pages/h5Pages?redirect=${newUrl}`});
                 },
                 //解析url
