@@ -197,8 +197,7 @@
 				var item = urllist[i].split("=")
 				this.project[item[0]]=item[1]
 				}
-				this.project.scityname=decodeURI(this.project.scityname);
-				this.project.type=decodeURI(this.project.type);
+				this.project.scityname = decodeURI(this.project.scityname);
 		        window.sessionStorage.project=JSON.stringify(this.project)
 		    },
 		    mounted(){
@@ -227,8 +226,9 @@
 		    		this._drawing()
 		    	})
 		    },
-		    btnlist(){		  
-				location.href='statisticslist.html?cityName='+this.project.scityname+'&type='+this.project.type;
+		    btnlist(){
+				console.log(this.project.type)
+				location.href='statisticslist.html?cityName='+this.project.scity+'&type='+this.project.type;	  
 		    },
 		    // 自适应代码
 		    _remdcs(){
