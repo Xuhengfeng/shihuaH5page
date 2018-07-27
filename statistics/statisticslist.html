@@ -320,7 +320,7 @@
             <div class="cnxhlistitem" v-for="item in list" @click="startAPP(item)">
                 <div class="cnxhcontnet">
                     <div class="cnxhcontnetleft">
-                        <img :src="item.housePic " alt="">
+                        <img :src="item.housePic " onerror="defaultImg">
                     </div>
                     <div class="cnxhcontnetright">
                         <div class="cnxhconterone">
@@ -337,7 +337,7 @@
                         </div>
                          <div class="cnxhconterfive">
                             <div>{{item.saleTotal}}万</div>
-                            <div>{{item.salePrice}}元/平方</div>
+                            <div>{{item.salePrice}}元/平</div>
                         </div>
                     </div>
                 </div>              
@@ -403,7 +403,11 @@
 			 }
 		    }
 		    
-		    },
+        },
+        defaultImg() {
+          console.log('this.src="'+require("./imgs/dafault.png")+'"')
+           return 'this.src="'+require("./imgs/dafault.png")+'"';
+        },
 		    //获取列表
 		  	_querys(){
 		  		$axios.post(HOUSINGCS,{
@@ -423,9 +427,8 @@
 				            } else {
 				              res.data.data[i].houseTag = res.data.data[i].houseTag;
 				            }
-			  			}
+              }
 			  			this.list=this.list.concat(res.data.data)
-			  			console.log(this.list)
 		  			}else{
 		  				this.numberone=false;
 		  				this.showone=false;

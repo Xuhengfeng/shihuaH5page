@@ -163,7 +163,7 @@
 					</div>
 				</li>
 			</ul>
-			<ul id="ul_2">
+			<ul id="ul_2" v-if="isViewRecord">
 				<li>查看近60天成交房源</li>
 				<li id="btnli" @click="btnlist"><span>共{{data.day60SuiteCount}}套</span><img src="imgs/gengduojiantou.png" alt="" /></li>
 			</ul>
@@ -187,6 +187,7 @@
 		       marketPricelist:[],//市场价
 		       suiteCountlist:[],//成交量
 			   monthlist:[],//月份
+			   isViewRecord: null,//是否展示成交房源记录
 		       project:{},//get传的参数
 		    },
 		    created(){
@@ -212,7 +213,8 @@
 		    		}
 		    	})
 		    	.then(res=>{
-		    		this.data=res.data.data
+					this.data=res.data.data
+					this.isViewRecord=this.data.isViewRecord;
 		    		for(let i=0;i<this.data.trendList.length;i++){
 		    			this.avgPricelist.push(this.data.trendList[i].avgPrice)
 		    			this.marketPricelist.push(this.data.trendList[i].marketPrice)
@@ -227,7 +229,6 @@
 		    	})
 		    },
 		    btnlist(){
-				console.log(this.project.type)
 				location.href='statisticslist.html?cityName='+this.project.scity+'&type='+this.project.type;	  
 		    },
 		    // 自适应代码
