@@ -184,3 +184,7 @@ li img{
     transform: translateX(-50%);
     border-radius: 1rem;
 }
+
+input[type="number"]::-webkit-input-placeholder{
+    color: #000000;
+}

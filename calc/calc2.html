@@ -275,13 +275,26 @@
     <script src="js/jquery-3.2.1.min.js"></script>
     <script>
        'use strict';
+        //初始值
         var calcType=0;//计算方式 0表示房价计算  1表示贷款总额计算
-        var years=0;//贷款年限
-        var rate1=0;// 或者[2.75, 3.02, 3.3]// 或者[3.25, 3.57, 3.9] 公积金贷款利率
-        var rate2=0;// 或者[4.35, 4.13, 3.91, 3.83, 3.78]// 或者[4.75,...省略] 或者[4.9,...省略]商业贷款利率
-        var rate3=0;//贷款比例
-        var rate2Arr=['','9.5折','9折','8.8折','8.7折','8.6折','1.1倍','1.2倍','1.3倍','1.4倍'];//商业贷款利率
-        var rate3Arr=['2成','3成','4成','5成','6成','7成','8成'];//贷款比例
+        var years=30;//贷款年限
+        var rate1=null;//公积金贷款利率
+        var rate2=null;//商业贷款利率
+        var rate3=null;//贷款比例
+        
+        //公积金贷款利率
+        var rate11Num=[2.75, 3.02, 3.3]; //1-5年的
+        var rate12Num=[3.25, 3.57, 3.9]; //6年以上的
+
+        //商业贷款利率
+        var rate21Arr=['','9.5折','9折','8.8折','8.7折','8.6折','1.1倍','1.2倍','1.3倍',''];//商业贷款利率
+        var rate21Num=[4.35, 4.13, 3.91, 3.83, 3.78, 3.74, 4.78, 5.22, 5.66];//1年的
+        var rate22Num=[4.75, 4.51, 4.28, 4.18, 4.13, 4.08, 5.22, 5.7, 6.18];//2-5年的
+        var rate23Num=[4.9, 4.66, 4.41, 4.31, 4.26, 4.21, 5.39, 5.88, 6.37];//6年以上的
+
+        //房价贷款比例
+        var rate31Arr=['2成','3成','4成','5成','6成','7成','8成'];//贷款比例
+        var rate31Num=[2,3,4,5,6,7,8]
 
         // nav内容切换
         $('header>div').click(function(){
@@ -331,7 +344,7 @@
         })
         //商业贷款利率
         var htmlRate2='';
-            rate2Arr.forEach(function(item,index){
+            rate21Arr.forEach(function(item,index){
                 htmlRate2+='<li>最新基准利率'+item+'</li>'; 
             })
         $('#dialogFour ul').append(htmlRate2);    
@@ -341,7 +354,7 @@
         })
         //房价贷款比例
         var htmlRate3='';
-            rate3Arr.forEach(function(item,index){
+            rate31Arr.forEach(function(item,index){
                 htmlRate3+='<li>'+item+'</li>'; 
             })
         $('#dialogFive ul').append(htmlRate3);    
@@ -362,102 +375,92 @@
             $('#dialogFour').hide();
             $('#dialogFive').hide();
         })
-        //计算方式
+        //监听计算方式
         .on('click', '#dialogOne ul li', function(){
-            calcType = $(this).index();
-            $('.calc input').val($(this).text());
-            $(this).addClass('color1').siblings().removeClass('color1');
-            if(calcType==0){
-                $('ol').hide();
-            }else{
-                $('ol').show();
-            }
-            $('.shadow,#dialogOne').hide();
-        })
-        //贷款年限
-        .on('click', '#dialogTwo ul li', function(){
-            years = $(this).index();
-            $('.year input').val($(this).text());
-            changeRate(0);//修改利率
-            $(this).addClass('color1').siblings().removeClass('color1');
-            $('.shadow,#dialogTwo').hide();
-        })
-        //公积金贷款利率
-        .on('click', '#dialogThree ul li', function(){
-            var text = $(this).text();
-            $('.rate1 input').val(text);
-            //取出数值
-            var num = text.match(/\d+(.\d+)?/g) == null
-            ? 0
-            : text.match(/\d+(.\d+)?/g)[0]-0;
-            changeRate(num, text);//修改利率  
-
-            $(this).addClass('color1').siblings().removeClass('color1');
-            $('.shadow,#dialogThree').hide();
-        })
-        //商业贷款利率
-        .on('click', '#dialogFour ul li', function(){
-            var text = $(this).text();
-            $('.rate2 input').val(text);
-            //取出数值
-            var num = text.match(/\d+(.\d+)?/g) == null
-            ? 0
-            : text.match(/\d+(.\d+)?/g)[0]-0;
-            changeRate(num, text);//修改利率 
-
-            $(this).addClass('color1').siblings().removeClass('color1');
-            $('.shadow,#dialogFour').hide();
-        })
-        //房价贷款比例
-        .on('click', '#dialogFive ul li', function(){
-            var text = $(this).text();
-            $('.rate3 input').val(text);
-            //取出数值
-            var num = text.match(/\d+(.\d+)?/g) == null
-            ? 0
-            : text.match(/\d+(.\d+)?/g)[0]-0;
-            changeRate(num, text);//修改利率 
             
-            $(this).addClass('color1').siblings().removeClass('color1');
-            rate3 = $(this).index();
+                calcType = $(this).index();
+                $('.calc input').val($(this).text());
+                $(this).addClass('color1').siblings().removeClass('color1');
+                calcType==0?$('ol').hide():$('ol').show();
+                $('.shadow,#dialogOne').hide();
 
-            $('.shadow,#dialogFive').hide();
+        })
+        //监听贷款年限
+        .on('click', '#dialogTwo ul li', function(){
+            
+                $('.year input').val($(this).text());
+                years = $(this).index()+1;
+                changeRate(years);//修改利率
+                $(this).addClass('color1').siblings().removeClass('color1');
+                $('.shadow,#dialogTwo').hide();
+
+        })
+        //监听公积金贷款利率
+        .on('click', '#dialogThree ul li', function(){
+            
+                var index = $(this).index();
+                var str = $(this).text();
+                if(years<=5){
+                    var newStr = str + "("+rate11Num[index]+"%)";
+                    $('.rate1 input').val(newStr);
+                    rate1 = rate11Num[index];
+                }else{
+                    var newStr = str + "("+rate12Num[index]+"%)";
+                    $('.rate1 input').val(newStr);
+                    rate1 = rate11Num[index];
+                }
+                $(this).addClass('color1').siblings().removeClass('color1');
+                $('.shadow,#dialogThree').hide();
+
+        })
+        //监听商业贷款利率
+        .on('click', '#dialogFour ul li', function(){
+            
+                var index = $(this).index();
+                var str = $(this).text();
+                if(years==1){
+                    var newStr = str + "("+rate21Num[index]+"%)";
+                    $('.rate2 input').val(newStr);
+                    rate2 = rate21Num[index];
+                }else if(years<=5){
+                    var newStr = str + "("+rate22Num[index]+"%)";
+                    $('.rate2 input').val(newStr);
+                    rate2 = rate22Num[index];
+                }else{
+                    var newStr = str + "("+rate23Num[index]+"%)";
+                    $('.rate2 input').val(newStr);
+                    rate2 = rate23Num[index];
+                }
+                $(this).addClass('color1').siblings().removeClass('color1');
+                $('.shadow,#dialogFour').hide();
+            
+        })
+        //监听房价贷款比例
+        .on('click', '#dialogFive ul li', function(){
+                var index = $(this).index();
+                var str = $(this).text();
+                $(this).addClass('color1').siblings().removeClass('color1');
+                rate3 = rate31Num[index];
+                $('.rate3 input').val(str);
+                $('.shadow,#dialogFive').hide();
         })
 
         //根据年限修改贷款利率
-        //1-5年 公积金利率2.75% 商业利率4.35%  
-        //5年以上 公积金利率3.25% 商业利率4.9% 
-        function changeRate(nums, text) {
-            var years = parseInt($('.year input').val());
+        function changeRate(years) {
+            console.log(years)
             if(years==1)
             {
                 rate1 = 2.75;
                 rate2 = 4.35;
                 $('.rate1 input').val('最新基准利率(2.75%)');
                 $('.rate2 input').val('最新基准利率(4.35%)');
-                if(nums!=0){
-                    rate1 = rate1*nums;
-                    rate2 = rate2*nums;
-                    var str1 = text+'('+rate1.toFixed(2)+'%)';
-                    var str2 = text+'('+rate2.toFixed(2)+'%)';
-                    $('.rate1 input').val(str1);
-                    $('.rate2 input').val(str2);
-                }
             }
             else if(years>1&&years<=5)
             {
-                rate1 = 3.25;
+                rate1 = 2.75;
                 rate2 = 4.75;
-                $('.rate1 input').val('最新基准利率(3.25%)');
+                $('.rate1 input').val('最新基准利率(2.75%)');
                 $('.rate2 input').val('最新基准利率(4.75%)');
-                if(nums!=0){
-                    rate1 = rate1*nums;
-                    rate2 = rate2*nums;
-                    var str1 = text+'('+rate1.toFixed(2)+'%)';
-                    var str2 = text+'('+rate2.toFixed(2)+'%)';
-                    $('.rate1 input').val(str1);
-                    $('.rate2 input').val(str2);
-                }
             }
             else
             {
@@ -465,35 +468,13 @@
                 rate2 = 4.9;
                 $('.rate1 input').val('最新基准利率(3.25%)');
                 $('.rate2 input').val('最新基准利率(4.9%)');
-                if(nums!=0){
-                    rate1 = rate1*nums;
-                    rate2 = rate2*nums;
-                    var str1 = text+'('+rate1.toFixed(2)+'%)';
-                    var str2 = text+'('+rate2.toFixed(2)+'%)';
-                    $('.rate1 input').val(str1);
-                    $('.rate2 input').val(str2);
-                }
             }
         }
 
-
-        //光标定位到文本框字符串末尾函数用法示例：
-        // function setCaretPosition(tObj, sPos){
-        //     if(tObj.setSelectionRange){
-        //         setTimeout(function(){
-        //             tObj.setSelectionRange(sPos, sPos);
-        //             tObj.focus();
-        //         }, 0);
-        //     }else if(tObj.createTextRange){
-        //         var rng = tObj.createTextRange();
-        //         rng.move('character', sPos);
-        //         rng.select();
-        //     }
-        // }
-        // var tObj =document.getElementById("test");
-        // var sPos = tObj.value.length;
-        // setCaretPosition(tObj, sPos);
-
+        //根据房价总额计算贷款总额
+        $("ol input").change(function(){
+            console.log(12121)
+        });
     </script>
 </body>
 </html>

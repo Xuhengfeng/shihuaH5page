@@ -50,10 +50,9 @@
             },
             created() {
                 this.urlparams = this.parseUrl(location.href);
-                this.urlparams.one = JSON.parse(decodeURI(this.urlparams.one));
-                this.urlparams.two = JSON.parse(decodeURI(this.urlparams.two));
-                console.table(this.urlparams)
-                this.selectItem(0);
+                this.urlparams.one = JSON.parse(decodeURI(this.urlparams.selectNum1));
+                this.urlparams.two = JSON.parse(decodeURI(this.urlparams.selectNum2));
+                this.selectItem(0)
             },
             watch: {
                 data() {
@@ -62,9 +61,6 @@
                     //自适应宽高
                     var myChartContainer = function () {
                         myChart.style.width = 17+'rem';
-                        // myChart.style.width = 50%;
-
-                        // myChart.style.height = 17+'rem';
                         myChart.style.height = 17+'rem';
                     };
                     myChartContainer();
@@ -148,10 +144,6 @@
                     }
                     
                 }
-            },
-            mounted() {
-                
-
             }
         })
     </script>
