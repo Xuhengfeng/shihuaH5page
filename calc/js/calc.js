@@ -1,6 +1,7 @@
 var vm = new Vue({
     el: '#box',
     data:{
+        type: '',//ios web android 
         menu:['公积金贷款','商业贷款','组合贷款'],
         mode: "按贷款总额",//计算模式
         isLoans: true,//按贷款计算方式
@@ -19,17 +20,14 @@ var vm = new Vue({
         isToast: false,//是否提示
         toastContent: "请输入贷款金额",//提示内容
         rate: "7成",//公积金 商业 组合的贷款比例
-
+        own2rate: '',//自定义利率
         selectNum: 0,//tab切换的索引
-        selectNum1: null,
-        selectNum2: null,
-        selectNum3: null,
-        selectNum4: null,
-
+        selectNum1: null,//计算方式的样式
+        selectNum2: null,//年的样式
+        selectNum3: null,//利率的样式
+        selectNum4: null,//比例的样式
         isCancel: false,//打开展开选项
         ergodic : null,//展开项将要的遍历对象
-        
-        // 遍历对象
         calcWay: ['按房价总额','按贷款总额'], //计算方式
         loanYears: 30,  //贷款年限
         loanRate: [], //贷款利率
@@ -39,6 +37,11 @@ var vm = new Vue({
     },
     created() {
         this.selectItem(1);
+        try{
+            var url = location.href;
+            var urlparams = this.parseUrl(url);
+            this.type = urlparams.type.toLowerCase();
+        }catch(err){}
     },
     watch: {
         // 房价
@@ -70,6 +73,7 @@ var vm = new Vue({
                 this.loans2 = this.loans;
             }
         },
+
         // 公积金贷款
         houseLoans() {
             if((this.commercialLoans+this.houseLoans)>this.loans){
@@ -78,9 +82,58 @@ var vm = new Vue({
                 setTimeout(()=>{this.isToast=false},3000);
             }
             this.commercialLoans = this.loans - this.houseLoans;
+        },
+        // 自定义利率
+        own2rate() {
+            if(parseInt(this.own2rate)>100){
+                this.isToast=true;                
+                this.toastContent="请输入100以内的数值";
+                setTimeout(()=>{this.isToast=false},3000);
+            }
         }
     },
     methods:{
+        //自定义利率
+        confirmRate() {
+            let index = this.selectNum;
+            let showown2Rate = parseInt(this.own2rate.slice(0,2));
+            if(index==0){
+                this.rate11='自定义利率('+showown2Rate+'%)';
+                this.calcRate1=showown2Rate;
+            }else if(index==1){
+                this.rate21='自定义利率('+showown2Rate+'%)';
+                this.calcRate2=showown2Rate;  
+            }else if(index==3){
+                this.rate11='自定义利率('+showown2Rate+'%)';
+                this.calcRate1=showown2Rate;
+            }else if(index==4){
+                this.rate21='自定义利率('+showown2Rate+'%)';
+                this.calcRate2=showown2Rate;                  
+            }                
+            this.cancel();
+        },
+        //返回
+        back() {
+            this.url = "scheme://host/pathPrefix"; 
+            switch(this.type){
+                case 'web': return window.history.back(); 
+                case 'ios': return location.href = this.url;  
+                case 'android': return location.href = this.url;
+            }
+        },
+        //解析url
+        parseUrl(url) {
+            try{
+                var urlStr=url.split("?")[1].split("&");
+                var urlparams = {};
+                for( let i=0;i<urlStr.length;i++){
+                    var item = urlStr[i].split("=")
+                    urlparams[item[0]]=item[1]
+                }
+                return urlparams;
+            }
+            catch(err){}
+        },  
         /**
          * selectItem(index) 
          * index  0 1 2 控制菜单对应高亮
@@ -91,14 +144,12 @@ var vm = new Vue({
             this.commercialLoans = this.loans - this.houseLoans;
         },
         selectItem(index) {
-            let num;
             //修改头部的菜单高亮
-            index<=2
-            ? this.selectNum=index 
-            : this.selectNum3=index;
-            num = index;
+            if(index<=2){
+                this.selectNum=index 
+            }
             //修改loanRate贷款利率的内容
-            switch(num) {
+            switch(index) {
                 case 0:this.loanRate = ['','1.1倍','1.2倍'];break;
                 case 1:this.loanRate = ['','9.5折','9折','8.8折','8.7折','8.6折','1.1倍','1.2倍','1.3倍','1.4倍'];break;
                 case 3:this.loanRate = ['','1.1倍','1.2倍'];this.unfold(2);break;
@@ -143,9 +194,9 @@ var vm = new Vue({
                 case 0://计算方式
                     this.mode = item;
                     this.selectNum1 = index;
-                    if(item=="按房价总额"){
+                    if(this.mode == "按房价总额"){
                         this.isLoans=false;
-                    }else if(item == "按贷款总额") {
+                    }else if(this.mode == "按贷款总额") {
                         this.isLoans=true;
                     }
                     break;
@@ -153,27 +204,23 @@ var vm = new Vue({
                     this.years=item+'年';
                     this.calcYears=item;
                     this.selectNum2 = index;
-                    if(item<=5&&item>1){
+                    if(item>1&&item<=5){
                         this.rate11="最新基准利率(2.75%)";
                         this.rate21="最新基准率(4.75%)";
-                        if(this.selectNum==0){
-                            this.calcRate=2.75;
-                        }else if(this.selectNum==1){
-                            this.calcRate=4.75;                                    
-                        }
+                        this.calcRate1=2.75;
+                        this.calcRate2=4.75;                                    
                     }
                     else if(item == 1) {
                         this.rate11="最新基准利率(2.75%)";
                         this.rate21="最新基准率(4.35%)";
+                        this.calcRate1=2.75;
+                        this.calcRate2=4.35;   
                     }
                     else{
                         this.rate11="最新基准利率(3.25%)";
                         this.rate21="最新基准率(4.9%)";
-                        if(this.selectNum==0){
-                            this.calcRate=3.25;
-                        }else if(this.selectNum==1){
-                            this.calcRate=4.9;
-                        }
+                        this.calcRate1=3.25;
+                        this.calcRate2=4.9; 
                     }
                     break;
                 case 2://利率
@@ -181,7 +228,7 @@ var vm = new Vue({
                     this.changeRate(item,index,this.selectNum);
                     break;
                 case 3://贷款比例
-                    this.selectNum4 = index;
+                    this.selectItem4 = index;
                     this.rate=item+'成';
                     break;
             }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 50px;">
 <head>
     <meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
@@ -20,6 +20,7 @@
             @click="selectItem(index)">{{item}}</div>
             <!-- <div>等额本金</div>
             <div>等额本息</div> -->
+            <div class="back" @click="back()"></div>
         </header>
         <section>
                 <ul>
@@ -104,6 +105,9 @@
                 }
             },
             methods: {
+                back() {
+                    window.history.back();
+                },
                 parseUrl(url) {
                     var urlStr=url.split("?")[1].split("&");
                     var urlparams = {};

@@ -24,7 +24,7 @@
                 @click="selectItem(index)" v-text="item"></div>
             <!-- <div>商业贷款</div> -->
             <!-- <div>组合贷款</div> -->
-            <!-- <div class="back"></div> -->
+            <div class="back" @click="back()"></div>
         </header>
         
         <!-- 公积金贷款 -->
@@ -68,7 +68,7 @@
                 <li @click="unfold(0)">计算方式<input v-model="mode" readonly/><img src="imgs/arrows.png"/></li>
                 <!-- 按房价总额 -->
                 <ol v-if="!isLoans">
-                    <li class="price">房价总额<input v-model="loans" type="number" placeholder="0"/><span>万</span></li>
+                    <li class="price">房价总额<input v-model="sellPrice" type="number" placeholder="0"/><span>万</span></li>
                     <li @click="unfold(3)">贷款比例<input v-model="rate" readonly/><img src="imgs/arrows.png"/></li>
                 </ol>
                 <li class="price">贷款总额<input v-model="loans" type="number" placeholder="0"/><span>万</span></li>
@@ -95,6 +95,7 @@
                 <div class="dialog" v-if="isCancel">
                     <!-- 公积金贷款 商业贷款 组合贷款-->
                     <div>
+                        <!-- 标题 -->
                         <div class="title" 
                              v-for="(item,index) in titles"
                              v-if="titleIndex == index">
@@ -107,7 +108,7 @@
                                 @click="selectOption(item,index)">{{item}}</li>
                         </ul>
                         
-                        <!-- 计算方式 -->
+                        <!-- 计算年数 -->
                         <ul v-show="titleIndex == 1">
                             <li :class="selectNum2==index?'bgColor2':''" 
                                 v-for="(item,index) in ergodic"
@@ -120,7 +121,7 @@
                                 v-for="(item,index) in ergodic"
                                 @click="selectOption(item,index)">最新基准利率{{item}}</li>
                             <div class="ownrate" v-if="titleIndex == 2">
-                                自定义利率:<input placeholder="输入自定义利率"/>%<button>确定</button>
+                                自定义利率:<input type="number" placeholder="输入自定义利率" v-model="own2rate"/>%<button @click="confirmRate()">确定</button>
                             </div>
                         </ul>
 
