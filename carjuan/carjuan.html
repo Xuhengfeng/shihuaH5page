@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 50px;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=on" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>积分兑换</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="./css/carjuan.css">
+</head>
+
+<body>
+    <div id="box">
+        <header>
+            <div>积分兑换</div>
+            <div class="back" @click="back()"></div>
+        </header>
+        <section>
+            <div class="content">
+                <div class="img"></div>
+                <div>购房85折折扣劵</div>
+                <div>积分: 2000分</div>
+                <div class="gray">已兑100</div>
+                <div class="compouter">
+                    <input type="number" :placeholder="defaultNum" readonly/>
+                    <div class="addBtn" @click="addBtn()"></div>
+                </div>
+            </div>
+        </section>
+        <button class="confirm" @click="confirm()">确定</button>
+        
+        <div class="warp" v-show="warpbol">
+            <transition name="fade">
+                <div v-show="warpbol" style="width: 100%;height: 100%;"  @click.self="warpbol=false">
+                    <div class="warpbox" v-if="warpbox">
+                            <p>卡劵转赠</p>
+                            <input type="text" placeholder="请输入好用用户名">
+                            <div id="warpbtn" @click.stop="btnone">下一步</div>
+                    </div>
+                    <div class="warpboxtwo" v-else>
+                            <p>卡劵转赠</p>
+                            <div>
+                                <input type="text" placeholder="请输入验证码">
+                                <p>{{btnname}}</p>
+                            </div>
+                            <div>
+                                <p @click.stop="btntwo">取消</p>
+                                <p @click.stop="btnthree">确定</p>
+                            </div>
+                    </div>
+                    <img @click="btnthree" src="imgs/warpnide.png" alt="">
+                </div>
+            </transition>
+        </div>
+        
+    </div>
+    <!-- 屏蔽广告 -->
+    <script src="../js/shield.js"></script>
+    <script src="../js/response.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/axiosurl.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data: {
+                navactive: "0",
+                warpbol:false,
+                warpbox:true,
+                dataname: "卡卷",
+                btnname:"获取验证码",
+                defaultNum: 1,
+                navlist: ["待使用", "已使用", "已过期"]
+            },
+            created() {
+
+            },
+            methods: {
+                //增加按钮
+                addBtn: function() {
+                    this.defaultNum += 1;
+                },
+                //确定
+                confirm: function() {
+                    this.warpbol=true;
+                },
+                warpbtn: function(){
+                    this.warpbol=true;
+                },
+                btnone: function(){
+                    this.warpbox=false;  
+                },
+                btntwo: function(){
+                    this.warpbox=true;
+                    this.warpbol=false;
+                },
+                btnthree: function(){
+                    this.warpbox=true;
+                    this.warpbol=false;
+                }
+            },
+        })
+    </script>
+</body>
+</html>
