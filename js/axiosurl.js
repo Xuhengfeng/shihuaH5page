@@ -1,6 +1,6 @@
 'use strict';
 const SERVER_IPS = ["https://custapis.shyj.cn/custAppApi","http://112.74.181.229:7031/custAppApi"];//api接口
-const SERVERINDEX = 1;
+const SERVERINDEX = 0;
 const SERVER_IP = SERVER_IPS[SERVERINDEX];
 const $axios = axios.create({
     baseURL: SERVER_IP,
@@ -36,4 +36,5 @@ let GETGOODSDETAIL = SERVER_IP+'/score/getGoodsDetail'//查看商品的详细信
 let EXCHANGE = SERVER_IP + '/score/exchange'//积分兑换礼品
 let GETCOUPONDETAIL = SERVER_IP + '/coupon/getCouponDetail'//已兑换的卡劵详情
 let GETGIVECOUPONDETAIL = SERVER_IP + '/coupon/getGiveCouponDetail'//已转赠卡劵详情
+let GENERALIZE = SERVER_IP + '/version/generalize'//安卓推广接口
 

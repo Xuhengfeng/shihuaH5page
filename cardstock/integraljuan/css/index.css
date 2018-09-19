@@ -29,8 +29,8 @@
         height: 2.53rem;
         margin: auto;
         margin-top: 1.17rem;
-        /* background: url("../imgs/titleimg.png"); */
         background-size: cover;
+        margin-top:0.4rem;
 }
 .contentimg>img{
         width:100%;

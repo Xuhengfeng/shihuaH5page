@@ -85,6 +85,9 @@
 
 	.msg>div {
 		padding: 0.15rem 0;
+		 overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
 	}
 
 	.msg>div:nth-child(1) {
@@ -169,9 +172,7 @@
 			// 	}
 			// },
 			_querys() {
-				axios.post(SCOREGIFT + "?pageNo=1&pageSize=10", {
-					headers: { 'unique-code': this.token, 'scity': this.scity },
-				})
+				axios.post(SCOREGIFT + "?pageNo=1&pageSize=10")
 					.then(res => {
 						this.list.push(...res.data.data)
 					})
