@@ -96,21 +96,32 @@ var vm = new Vue({
         //自定义利率
         confirmRate() {
             let index = this.selectNum;
-            let showown2Rate = parseInt(this.own2rate.slice(0,2));
-            if(index==0){
-                this.rate11='自定义利率('+showown2Rate+'%)';
-                this.calcRate1=showown2Rate;
-            }else if(index==1){
-                this.rate21='自定义利率('+showown2Rate+'%)';
-                this.calcRate2=showown2Rate;  
-            }else if(index==3){
-                this.rate11='自定义利率('+showown2Rate+'%)';
-                this.calcRate1=showown2Rate;
-            }else if(index==4){
-                this.rate21='自定义利率('+showown2Rate+'%)';
-                this.calcRate2=showown2Rate;                  
-            }                
-            this.cancel();
+            let showown2Rate = Number(Number(this.own2rate).toFixed(2));
+            if(showown2Rate>100){
+                this.isToast=true;                
+                this.toastContent="请输入100以内的数值";
+                setTimeout(()=>{
+                    this.own2rate = null;
+                    this.isToast=false}
+                ,3000);
+            }else{
+                if(index==0){
+                    this.rate11='自定义利率('+showown2Rate+'%)';
+                    this.calcRate1=showown2Rate;
+                }else if(index==1){
+                    this.rate21='自定义利率('+showown2Rate+'%)';
+                    this.calcRate2=showown2Rate;  
+                }else if(index==3){
+                    this.rate11='自定义利率('+showown2Rate+'%)';
+                    this.calcRate1=showown2Rate;
+                }else if(index==4){
+                    this.rate21='自定义利率('+showown2Rate+'%)';
+                    this.calcRate2=showown2Rate;                  
+                } 
+                this.own2rate = null;               
+                this.cancel();
+            }
+
         },
         //返回
         back() {
